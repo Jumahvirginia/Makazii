@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Property Details - Makazi</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <h1>Makazi</h1>
+        <div class="nav-links">
+            <a href="../dashboards/tenant.html">Back to Search</a>
+            <button id="logout-button" style="display:none;">Logout</button>
+        </div>
+    </header>
+
+    <main class="container property-detail-page">
+        <section id="property-info">
+            <p>Loading property details...</p>
+        </section>
+
+        <hr>
+
+        <section id="inquiry-section">
+            <h3>Contact Landlord / Request Info</h3>
+            <form id="inquiry-form" class="simple-form">
+                <div class="form-group">
+                    <label for="message">Your Message to the Landlord:</label>
+                    <textarea id="message" rows="5" placeholder="I am interested in this property. When is a good time for a viewing?" required></textarea>
+                </div>
+                <button type="submit" id="submit-inquiry-btn">Send Inquiry</button>
+                <p id="inquiry-message-area"></p>
+            </form>
+        </section>
+    </main>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabaseClient.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/property.js"></script>
+</body>
+</html>
