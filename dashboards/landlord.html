@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landlord Dashboard - Makazi</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <header class="navbar">
+        <h2>Makazi Landlord Dashboard</h2>
+        <div class="nav-links">
+            <button id="logout-button">Logout</button>
+        </div>
+    </header>
+
+    <main class="dashboard-content">
+        <section class="add-property">
+            <h3>➕ List a New Rental Property</h3>
+            <form id="add-property-form">
+                <div class="form-group">
+                    <label for="title">Property Title / Short Description:</label>
+                    <input type="text" id="title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location (City - Area):</label>
+                    <input type="text" id="location" placeholder="e.g., Nairobi - Kilimani" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Monthly Rent (Ksh):</label>
+                    <input type="number" id="price" min="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="details">Property Details / Amenities:</label>
+                    <textarea id="details" rows="4" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="image-file">Property Image (Upload):</label>
+                    <input type="file" id="image-file" accept="image/*" required>
+                </div>
+                
+                <button type="submit" id="submit-listing-btn">Submit Listing (Requires Admin Approval)</button>
+                <p id="message-area" class="message-text"></p>
+            </form>
+        </section>
+        
+        <hr>
+
+        <section class="my-listings">
+            <h3>🏡 My Active Listings & Inquiries</h3>
+            <div id="landlord-listings-container" class="property-grid">
+                <p>Loading your listings...</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabaseClient.js"></script>
+    <script src="../js/auth.js"></script> 
+    <script src="../js/landlord.js"></script>
+</body>
+</html>
