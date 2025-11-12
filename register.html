@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Makazi - Register</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <h1>Makazi - Create Account</h1>
+        
+        <form id="register-form">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+
+            <div class="form-group role-selection">
+                <label>I am a:</label>
+                <label>
+                    <input type="radio" name="role" value="tenant" checked> 
+                    Tenant (Looking for a home)
+                </label>
+                <label>
+                    <input type="radio" name="role" value="landlord"> 
+                    Landlord (Listing properties)
+                </label>
+            </div>
+
+            <button type="submit" id="register-button">Register</button>
+        </form>
+
+        <p>Already have an account? <a href="login.html">Login here</a></p>
+
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="js/supabaseClient.js"></script>
+        <script src="js/auth.js"></script>
+    </div>
+</body>
+</html>
