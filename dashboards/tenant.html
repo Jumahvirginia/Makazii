@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant Dashboard - Makazi</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+    <header class="navbar">
+        <h2>Makazi Tenant Dashboard</h2>
+        <div class="nav-links">
+            <a href="tenant.html">Browse Rentals</a>
+            <button id="logout-button">Logout</button>
+        </div>
+    </header>
+
+    <main class="dashboard-content">
+        <aside class="sidebar">
+            <h3>Search Filters</h3>
+            <form id="search-form">
+                <div class="form-group">
+                    <label for="location">Location:</label>
+                    <input type="text" id="location" placeholder="e.g., Kilimani">
+                </div>
+                <div class="form-group">
+                    <label for="price-max">Max Price:</label>
+                    <input type="number" id="price-max" placeholder="e.g., 50000">
+                </div>
+                <button type="submit">Search</button>
+                <button type="button" id="clear-search">Clear Filters</button>
+            </form>
+        </aside>
+
+        <section class="main-listings">
+            <h2>Available Rental Properties</h2>
+            <div id="listings-container" class="property-grid">
+                <p>Loading properties...</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabaseClient.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/tenant.js"></script>
+</body>
+</html>
