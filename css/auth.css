@@ -1,0 +1,41 @@
+/* css/auth.css */
+
+body {
+    /* Center the auth container on the page */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--light-gray);
+}
+
+.auth-container {
+    background-color: var(--bg-color);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px;
+}
+
+.auth-container h1 {
+    text-align: center;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+}
+
+.auth-container button {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.auth-container p {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.auth-container .role-selection label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
