@@ -1,0 +1,68 @@
+/* css/dashboard.css */
+
+.dashboard-content {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* --- Sidebar (Tenant & Admin) --- */
+.sidebar {
+    flex: 1; /* Takes 1 part of the space */
+    background-color: var(--bg-color);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    align-self: flex-start; /* Sticks to the top */
+}
+
+.sidebar h3 {
+    border-bottom: 2px solid var(--light-gray);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* --- Main Content (Tenant & Admin) --- */
+.main-listings {
+    flex: 3; /* Takes 3 parts of the space */
+}
+
+/* --- Grid for Property Cards --- */
+.property-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+/* --- Landlord Dashboard (Single Column) --- */
+.add-property, .my-listings, .admin-panel {
+    background-color: var(--bg-color);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+}
+
+.landlord-listing-card {
+    border: 1px solid var(--light-gray);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--border-radius);
+}
+
+.inquiries-section {
+    margin-top: 1rem;
+    border-top: 1px dashed var(--gray);
+    padding-top: 1rem;
+}
+.inquiry-list li {
+    list-style-type: none;
+    border-bottom: 1px solid var(--light-gray);
+    padding: 8px 0;
+}
+.inquiry-list .message-body {
+    font-style: italic;
+    color: var(--dark-gray);
+}
