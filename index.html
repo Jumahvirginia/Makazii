@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Makazi – Affordable Rental Homes</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    <header class="navbar">
+        <h1>Makazi</h1>
+        <nav>
+            <a href="login.html" class="nav-button">Login</a>
+            <a href="register.html" class="nav-button primary">Register</a>
+        </nav>
+    </header>
+
+    <main class="landing-hero">
+        <div class="hero-content">
+            <h2>Find Your Next Home, Affordably.</h2>
+            <p>Makazi connects you directly with trusted landlords for verified, budget-friendly rental properties.</p>
+            
+            <form id="landing-search-form" class="search-bar">
+                <input type="text" id="landing-location" placeholder="Enter location (e.g., Kilimani, Westlands)">
+                <button type="submit" class="search-button">Search</button>
+            </form>
+        </div>
+    </main>
+
+    <section class="listings-preview container">
+        <h3>Featured Properties</h3>
+        <div id="listings-container" class="property-grid">
+            <p>Search a location above to find available homes, or <a href="login.html">login</a> to browse all listings.</p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 Makazi - Affordable Rental Homes</p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/tenant.js"></script> 
+</body>
+</html>
