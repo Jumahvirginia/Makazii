@@ -1,66 +1,132 @@
-/* css/components.css (Optional, but good practice) */
-/* If you don't use this file, you can copy the .property-card styles into style.css */
+/* css/components.css */
 
-/* --- The Property Card --- */
+/* --- Flip Card Styles --- */
 .property-card {
-    background-color: var(--bg-color);
+    background-color: transparent;
+    width: 100%; /* Will be sized by the grid */
+    height: 380px; /* We need a fixed height for the flip */
+    perspective: 1000px; /* 3D effect */
     border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    overflow: hidden; /* Clips the image to the card's rounded corners */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.property-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-.property-card .property-image {
+.flip-card-inner {
+    position: relative;
     width: 100%;
-    height: 200px;
-    object-fit: cover; /* Ensures image covers the area without distortion */
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
 }
 
-.property-card .card-body {
+/* Flip on hover */
+.property-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Front and Back face styles */
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+    border-radius: var(--border-radius);
+    overflow: hidden; /* Clips image nicely */
+}
+
+/* Style the Front Face */
+.flip-card-front {
+    background-color: var(--bg-color); /* NEW: Cream */
+}
+
+.flip-card-front .property-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.flip-card-front .card-body {
     padding: 1rem;
+    text-align: center;
 }
 
-.property-card h3 {
+.flip-card-front .card-body h3 {
     font-size: 1.25rem;
-    margin-bottom: 0.5rem;
 }
 
-.property-card .location {
+/* Style the Back Face */
+.flip-card-back {
+    background-color: var(--bg-color); /* NEW: Cream */
+    transform: rotateY(180deg);
+}
+
+.flip-card-back .card-body {
+    padding: 1.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.flip-card-back h4 {
+    font-size: 1.15rem;
+    color: var(--primary-color); /* NEW: Burgundy */
+}
+
+.flip-card-back .location {
+    font-size: 0.9rem;
     color: var(--dark-gray);
     margin-bottom: 0.5rem;
 }
 
-.property-card .price {
-    font-size: 1.15rem;
+.flip-card-back .price {
+    font-size: 1.2rem;
     font-weight: 700;
-    color: var(--secondary-color);
+    color: var(--primary-color); /* NEW: Burgundy */
     margin-bottom: 1rem;
 }
 
-.property-card .details-button {
+.flip-card-back .card-details-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem;
+    flex-grow: 1; /* Pushes button to bottom */
+}
+.flip-card-back .card-details-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+.flip-card-back .card-details-list li i {
+    color: var(--secondary-color); /* NEW: Teal check */
+    font-size: 0.8rem;
+}
+
+
+.flip-card-back .details-button {
     display: block;
-    background-color: var(--primary-color);
+    background-color: var(--primary-color); /* NEW: Burgundy */
     color: white;
     text-align: center;
     padding: 10px;
     text-decoration: none;
     border-radius: var(--border-radius);
     font-weight: 600;
+    margin-top: 1rem; /* Creates space from details */
 }
+
 
 /* --- Admin Card --- */
 .admin-card {
     display: flex;
-    background-color: var(--bg-color);
+    background-color: var(--bg-color); /* NEW: Cream */
     box-shadow: var(--box-shadow);
     border-radius: var(--border-radius);
     margin-bottom: 1rem;
-    border-left: 5px solid var(--primary-color);
+    border-left: 5px solid var(--primary-color); /* NEW: Burgundy */
 }
 .admin-card .card-content {
     flex-grow: 1;
@@ -74,7 +140,7 @@
     padding: 1rem;
 }
 .admin-card .approve-btn {
-    background-color: var(--secondary-color);
+    background-color: var(--secondary-color); /* NEW: Teal */
 }
 .admin-card .deny-btn {
     background-color: var(--danger-color);
