@@ -1,15 +1,26 @@
 /* css/style.css */
 
-/* --- Root Variables (Color Palette) --- */
+/* --- Root Variables  --- */
 :root {
-    --primary-color: #3498db; /* A nice, clean blue */
-    --secondary-color: #2ecc71; /* A friendly green for success */
-    --light-gray: #f4f4f4;
-    --gray: #ccc;
-    --dark-gray: #555;
-    --text-color: #333;
-    --danger-color: #e74c3c;
-    --bg-color: #ffffff;
+    /* Primary Colors (Burgundy/Maroon) */
+    --primary-color: #880a23;
+    --primary-dark: #8b1028;
+
+    /* Secondary Colors (NEW: Teal) */
+    --secondary-color: #048b7b;
+    --secondary-dark: #118f84;
+
+    /* Neutral Colors ( Warm Cream) */
+    --text-color: #23272c;
+    --bg-color: #FFFFF8;      /*  Subtle Ivory/Cream for cards */
+    --light-gray: #FBF9F1;    /*  Warm Linen for page background */
+    --gray: #748495;        /* Kept for borders */
+
+    /* Utility Colors */
+    --danger-color: #E11D48;
+    --danger-dark: #BE123C;
+
+    /* Re-usable styles */
     --border-radius: 8px;
     --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
@@ -23,7 +34,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--light-gray);
+    background-color: var(--light-gray); /* Warm Linen */
     color: var(--text-color);
     line-height: 1.6;
 }
@@ -36,7 +47,7 @@ body {
 
 /* --- Navbar Styling --- */
 .navbar {
-    background-color: var(--bg-color);
+    background-color: var(--bg-color); /*  Cream */
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
@@ -46,7 +57,7 @@ body {
 }
 
 .navbar h1, .navbar h2 {
-    color: var(--primary-color);
+    color: var(--primary-color); /*  Burgundy */
     font-weight: 700;
 }
 
@@ -57,7 +68,7 @@ body {
 
 /* --- General Button Styling --- */
 button, .nav-button {
-    background-color: var(--primary-color);
+    background-color: var(--secondary-dark); /*  Teal */
     color: white;
     padding: 10px 18px;
     border: none;
@@ -75,22 +86,23 @@ button:disabled {
 }
 
 button:not(:disabled):hover, .nav-button:hover {
-    background-color: #2980b9; /* Darker blue */
+    background-color: var(--primary-dark); /*  Dark Burgundy */
     transform: translateY(-2px);
 }
 
+/* This is the "Register" button */
 .nav-button.primary {
-    background-color: var(--secondary-color);
+    background-color: var(--secondary-color); /* NEW: Teal */
 }
 .nav-button.primary:hover {
-    background-color: #27ae60; /* Darker green */
+    background-color: var(--secondary-dark); /* NEW: Dark Teal */
 }
 
 #logout-button {
     background-color: var(--danger-color);
 }
 #logout-button:hover {
-    background-color: #c0392b; /* Darker red */
+    background-color: var(--danger-dark);
 }
 
 /* --- Basic Form Group Styling --- */
@@ -108,12 +120,14 @@ input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="number"],
+input[type="date"],
 textarea {
     width: 100%;
     padding: 12px;
     border: 1px solid var(--gray);
     border-radius: var(--border-radius);
     font-size: 16px;
+    background-color: var(--bg-color); /* NEW: Cream background */
 }
 
 /* --- Landing Page Hero --- */
@@ -144,4 +158,97 @@ textarea {
 }
 .search-bar button {
     border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+.listings-preview h3 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* --- Property Grid (Moved from dashboard.css) --- */
+.property-grid {
+    display: grid;
+    /* 3-column layout */
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+/* --- Property Details Page Layout --- */
+.property-detail-layout {
+    display: flex;
+    flex-wrap: wrap; /* Allows stacking on small screens */
+    gap: 2rem;
+}
+
+.property-main-content {
+    flex: 2; /* Takes 2/3 of the space */
+    min-width: 300px; /* Prevents it from getting too small */
+}
+
+.property-sidebar-form {
+    flex: 1; /* Takes 1/3 of the space */
+    min-width: 280px;
+    background-color: var(--bg-color); /* NEW: Cream */
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    align-self: flex-start; /* This makes it "sticky" to the top */
+}
+
+.property-sidebar-form h3 {
+    color: var(--secondary-color); /* teal */
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--gray);
+    padding-bottom: 0.5rem;
+}
+
+/* --- Style the Tour Request Button --- */
+#submit-tour-btn {
+    background-color: var(--secondary-color); /*  Teal */
+}
+#submit-tour-btn:hover {
+    background-color: var(--secondary-dark); /* Dark Teal */
+}
+
+/* --- Style the rest of the property details --- */
+.property-header .detail-image {
+    width: 100%;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+}
+.property-header h1 {
+    font-size: 2.25rem;
+}
+.location-price {
+    font-size: 1.25rem;
+    color: var(--dark-gray);
+    margin-bottom: 1rem;
+}
+.property-body {
+    margin-top: 1.5rem;
+}
+.property-body h3 {
+    color: var(--primary-color); /* NEW: Burgundy */
+    border-bottom: 2px solid var(--gray);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* --- Styles for Property Details List --- */
+.property-details-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+.property-details-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+}
+.property-details-list li i {
+    color: var(--secondary-color); /* NEW: Teal check icon */
 }
