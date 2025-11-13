@@ -1,44 +1,55 @@
 /* css/dashboard.css */
 
-.dashboard-content {
+/* --- Tenant Dashboard Layout --- */
+.search-filter-bar {
+    /* Sits on the light-gray body background */
+    padding: 1rem 2rem;
+    margin: 1rem auto;
+    max-width: 1400px;
+}
+
+.search-filter-bar form {
     display: flex;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    align-items: flex-end;
+    gap: 1.5rem;
+}
+
+.search-filter-bar .form-group {
+    margin-bottom: 0;
+    /* Removed flex-grow to stop stretching */
+}
+
+/* 2. The 2-column split content area */
+.dashboard-content-split {
+    display: flex;
+    flex-wrap: wrap; /* Allow stacking on small screens */
     gap: 2rem;
-    padding: 2rem;
+    padding: 0 2rem 2rem 2rem;
     max-width: 1400px;
     margin: 0 auto;
 }
 
-/* --- Sidebar (Tenant & Admin) --- */
-.sidebar {
-    flex: 1; /* Takes 1 part of the space */
-    background-color: var(--bg-color);
-    padding: 1.5rem;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    align-self: flex-start; /* Sticks to the top */
+/* 3. The main listings (3/4) */
+.dashboard-content-split .main-listings {
+    flex: 3; /* Takes 3 parts */
+    min-width: 70%;
 }
 
-.sidebar h3 {
-    border-bottom: 2px solid var(--light-gray);
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
+/* 4. The requests sidebar (1/4) */
+.dashboard-content-split .sidebar-requests {
+    flex: 1; /* Takes 1 part */
+    min-width: 280px; /* Prevents it from getting too small */
+    align-self: flex-start; /* Stays at the top */
 }
 
-/* --- Main Content (Tenant & Admin) --- */
-.main-listings {
-    flex: 3; /* Takes 3 parts of the space */
-}
-
-/* --- Grid for Property Cards --- */
-.property-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-
-/* --- Landlord Dashboard (Single Column) --- */
-.add-property, .my-listings, .admin-panel {
-    background-color: var(--bg-color);
+/* --- Landlord/Admin Dashboard (Single Column) --- */
+/* These styles apply to landlord.html and admin.html */
+.add-property, 
+.my-listings, 
+.admin-panel,
+.tour-requests-panel {
+    background-color: var(--bg-color); /* NEW: Cream */
     padding: 2rem;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
@@ -46,23 +57,178 @@
 }
 
 .landlord-listing-card {
-    border: 1px solid var(--light-gray);
+    border: 1px solid var(--gray);
     padding: 1rem;
     margin-bottom: 1rem;
     border-radius: var(--border-radius);
 }
 
-.inquiries-section {
+.request-actions {
     margin-top: 1rem;
-    border-top: 1px dashed var(--gray);
-    padding-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
 }
-.inquiry-list li {
-    list-style-type: none;
+.request-actions .approve-btn {
+    background-color: var(--secondary-color); /* NEW: Teal */
+}
+.request-actions .deny-btn {
+    background-color: var(--danger-color);
+}
+
+/* --- Style Dashboard Section Headers --- */
+.add-property h3,
+.my-listings h3,
+.admin-panel h3,
+.tour-requests-panel h3,
+.sidebar h3,
+.my-requests-panel h3 {
+    color: var(--secondary-color); /* teal */
+    border-bottom: 2px solid var(--gray);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* --- Status Colors --- */
+.status-verified {
+    color: var(--secondary-color); /*  Teal */
+    font-weight: 600;
+}
+.status-pending {
+    color: var(--primary-color); /*  Burgundy */
+    font-weight: 600;
+}
+
+/* --- Modal Styles for Deny/Suggest --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--bg-color); /* NEW: Cream */
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.modal-actions #cancel-denial-btn {
+    background-color: var(--gray);
+    color: var(--text-color);
+}
+.modal-actions #cancel-denial-btn:hover {
+    background-color: var(--dark-gray);
+    color: white;
+}
+
+/* --- Tenant "My Requests" Card Styles --- */
+.my-requests-panel {
+    background-color: var(--bg-color); /* NEW: Cream */
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.request-status-card {
+    border: 1px solid var(--gray);
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+    background-color: var(--bg-color); /* NEW: Cream */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.request-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem;
     border-bottom: 1px solid var(--light-gray);
-    padding: 8px 0;
 }
-.inquiry-list .message-body {
-    font-style: italic;
+
+.request-card-header .property-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.request-card-header .property-name i {
+    color: var(--primary-color); /* NEW: Burgundy icon */
+}
+
+.request-status-card .status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+.request-card-body {
+    padding: 1rem;
+}
+
+.request-detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.request-detail-item i {
     color: var(--dark-gray);
+    margin-top: 4px;
+}
+
+.landlord-suggestion {
+    background-color: var(--light-gray);
+    border-left: 4px solid var(--primary-color); /* NEW: Burgundy */
+    padding: 0.75rem 1rem;
+    margin-top: 1rem;
+    border-radius: 4px;
+}
+
+/* Badge Status Colors */
+.status-badge.status-pending {
+    background-color: var(--primary-color); /* NEW: Burgundy */
+}
+.status-badge.status-approved {
+    background-color: var(--secondary-color); /* NEW: Teal */
+}
+.status-badge.status-denied {
+    background-color: var(--danger-color); /* Red */
+}
+
+.landlord-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1800px;
+    margin: 0 auto;
+    align-items: start; /* <--- ADD THIS LINE */
+}
+
+
+.landlord-dashboard-grid .add-property,
+.landlord-dashboard-grid .tour-requests-panel,
+.landlord-dashboard-grid .my-listings {
+    margin-bottom: 0; /* The 'gap' property handles spacing now */
 }
