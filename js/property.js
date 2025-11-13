@@ -1,21 +1,26 @@
-let currentPropertyId = null;
+// js/property.js
+
+let currentProperty = null; // Store the whole property object
 
 // Function to fetch and display the property details
 async function loadPropertyDetails() {
     const params = new URLSearchParams(window.location.search);
-    currentPropertyId = params.get('id');
+    const propertyId = params.get('id'); // Get the ID as a simple variable
     const infoContainer = document.getElementById('property-info');
 
-    if (!currentPropertyId) {
+    // --- THIS IS THE FIX ---
+    // We check the simple propertyId variable, not 'currentProperty.id'
+    if (!propertyId) {
         infoContainer.innerHTML = '<h2>Error: Property ID not found.</h2>';
         return;
     }
+    // --- END FIX ---
 
     // Fetch the property using its ID
     const { data: property, error } = await supabase
         .from('properties')
         .select('*')
-        .eq('id', currentPropertyId)
+        .eq('id', propertyId)
         .single();
 
     if (error || !property) {
@@ -23,8 +28,23 @@ async function loadPropertyDetails() {
         return;
     }
     
+    // NOW we store the full property object
+    currentProperty = property; 
+    
     // Update the page title
     document.getElementById('page-title').textContent = `${property.title} - Makazi`;
+
+    // --- Create a full details list ---
+    let detailsHTML = '';
+    if (property.details) {
+        detailsHTML = property.details.split('\n')
+            .map(item => `<li><i class="fas fa-check-circle"></i> ${item}</li>`)
+            .join('');
+        detailsHTML = `<ul class="property-details-list">${detailsHTML}</ul>`;
+    } else {
+        detailsHTML = '<p>No details provided.</p>';
+    }
+    // --- END NEW ---
 
     // Render the property details
     infoContainer.innerHTML = `
@@ -36,57 +56,73 @@ async function loadPropertyDetails() {
             </div>
         </div>
         <div class="property-body">
-            <h3>Details</h3>
-            <p>${property.details}</p>
+            <h3>Details & Amenities</h3>
+            
+            ${detailsHTML}
+
             <p><strong>Status:</strong> ${property.is_rented ? 'Rented' : 'Available'}</p>
             <p class="verification-status">
-                <strong>Verified:</strong> ${property.is_verified ? '✅ Listing approved by Admin' : '❌ Awaiting Admin Verification'}
+                <strong>Verified:</strong> ${property.is_verified ? '<span class="status-verified">✅ Yes</span>' : '<span class="status-pending">❌ No (Pending Approval)</span>'}
             </p>
         </div>
     `;
 }
 
-// Function to handle the inquiry submission
-async function handleInquirySubmit(event) {
+// Function to handle the tour request submission
+async function handleTourRequestSubmit(event) {
     event.preventDefault();
-    const message = document.getElementById('message').value;
-    const inquiryBtn = document.getElementById('submit-inquiry-btn');
-    const messageArea = document.getElementById('inquiry-message-area');
     
-    inquiryBtn.disabled = true;
-    messageArea.textContent = 'Sending message...';
-    messageArea.style.color = 'blue';
+    const requestedDate = document.getElementById('tour-date').value;
+    const message = document.getElementById('message').value;
+    const tourBtn = document.getElementById('submit-tour-btn');
+    const messageArea = document.getElementById('inquiry-message-area');
+
+    if (!requestedDate) {
+        alert('Please select a date for the tour.');
+        return;
+    }
+
+    tourBtn.disabled = true;
+    messageArea.textContent = 'Sending request...';
 
     try {
-        // 1. Check if the user is logged in (must be a tenant/user)
+        // 1. Get the current tenant's user ID
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
-            throw new Error('You must be logged in to send an inquiry. Please log in first.');
+            throw new Error('You must be logged in to send a request.');
+        }
+        
+        // This check will now work because currentProperty is the full object
+        if (!currentProperty || !currentProperty.landlord_id) {
+            throw new Error('Property information is missing. Please refresh.');
         }
 
-        // 2. Insert the message into the 'messages' table
+        // 2. Insert into the 'tour_requests' table
         const { error } = await supabase
-            .from('messages')
+            .from('tour_requests')
             .insert({
-                property_id: currentPropertyId,
+                property_id: currentProperty.id,
                 tenant_id: user.id,
-                message_body: message,
+                landlord_id: currentProperty.landlord_id,
+                requested_date: requestedDate,
+                message: message,
+                status: 'pending' // Default status
             });
 
         if (error) {
-            throw new Error(`Failed to send message: ${error.message}`);
+            throw new Error(`Failed to send request: ${error.message}`);
         }
 
-        messageArea.textContent = 'Inquiry sent successfully! The landlord will contact you soon.';
-        messageArea.style.color = 'green';
-        document.getElementById('inquiry-form').reset();
+        messageArea.textContent = 'Tour request sent successfully! The landlord will respond soon.';
+        messageArea.style.color = 'var(--dark-gray)'; 
+        document.getElementById('tour-request-form').reset();
         
     } catch (e) {
-        console.error("Inquiry Error:", e);
+        console.error("Tour Request Error:", e);
         messageArea.textContent = `Error: ${e.message}`;
-        messageArea.style.color = 'red';
+        messageArea.style.color = 'var(--danger-color)';
     } finally {
-        inquiryBtn.disabled = false;
+        tourBtn.disabled = false;
     }
 }
 
@@ -96,9 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
     loadPropertyDetails();
 
     // Set up the form listener
-    const inquiryForm = document.getElementById('inquiry-form');
-    if (inquiryForm) {
-        inquiryForm.addEventListener('submit', handleInquirySubmit);
+    const tourForm = document.getElementById('tour-request-form');
+    if (tourForm) {
+        tourForm.addEventListener('submit', handleTourRequestSubmit);
     }
     
     // Show logout button if logged in (handled by auth.js)
