@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landlord Dashboard - Makazi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/dashboard.css">
 </head>
@@ -11,13 +12,22 @@
     <header class="navbar">
         <h2>Makazi Landlord Dashboard</h2>
         <div class="nav-links">
+            <a href="../index.html" class="nav-button"><i class="fas fa-home"></i> Home</a>
             <button id="logout-button">Logout</button>
         </div>
     </header>
 
-    <main class="dashboard-content">
+    <main class="landlord-dashboard-grid">
+
+    <section class="my-listings">
+        <h3 class="panel-title"><i class="fas fa-home"></i> My Properties</h3>
+          <div id="landlord-listings-container">
+            <p>Loading your properties...</p>
+          </div>
+      </section>
+
         <section class="add-property">
-            <h3>➕ List a New Rental Property</h3>
+            <h3><i class="fas fa-plus-circle"></i> List a New Rental Property</h3>
             <form id="add-property-form">
                 <div class="form-group">
                     <label for="title">Property Title / Short Description:</label>
@@ -49,14 +59,41 @@
             </form>
         </section>
         
-        <hr>
 
-        <section class="my-listings">
-            <h3>🏡 My Active Listings & Inquiries</h3>
-            <div id="landlord-listings-container" class="property-grid">
-                <p>Loading your listings...</p>
+
+        <section class="tour-requests-panel">
+            <h3 class="panel-title"><i class="fas fa-calendar-check"></i> Pending Tour Requests</h3>
+                 <p>Review new requests from tenants. You can approve or deny and suggest a new time.</p>
+    
+            <div id="tour-requests-container">
+                 <p>Loading new tour requests...</p>
             </div>
         </section>
+
+
+
+
+    <div id="deny-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <h4>Suggest a New Date</h4>
+        <p>The tenant's requested date doesn't work. Deny it and suggest an alternative.</p>
+        
+        <form id="deny-request-form">
+            <div class="form-group">
+                <label for="suggested-date">Your Suggested Date:</label>
+                <input type="date" id="suggested-date" required>
+            </div>
+            <div class="form-group">
+                <label for="landlord-message">Message (optional):</label>
+                <textarea id="landlord-message" rows="3" placeholder="This date works better for me."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="submit" id="submit-denial-btn">Suggest New Date</button>
+                <button type="button" id="cancel-denial-btn">Cancel</button>
+            </div>
+        </form>
+    </div>
+  </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
