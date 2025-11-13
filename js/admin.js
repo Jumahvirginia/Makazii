@@ -36,8 +36,8 @@ async function fetchPendingListings() {
                 <a href="../pages/property_details.html?id=${p.id}" target="_blank" class="small-btn">View Details Page</a>
             </div>
             <div class="card-actions">
-                <button class="approve-btn" data-id="${p.id}">✅ Approve</button>
-                <button class="deny-btn" data-id="${p.id}">❌ Deny</button>
+                <button class="approve-btn" data-id="${p.id}"><i class="fas fa-check-circle"></i> Approve</button>
+                <button class="deny-btn" data-id="${p.id}"><i class="fas fa-times-circle"></i> Deny</button>
             </div>
         </div>
     `).join('');
