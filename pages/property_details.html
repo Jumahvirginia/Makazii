@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">Property Details - Makazi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -16,24 +17,37 @@
     </header>
 
     <main class="container property-detail-page">
-        <section id="property-info">
-            <p>Loading property details...</p>
-        </section>
+    
+    <div class="property-detail-layout">
 
-        <hr>
+        <div class="property-main-content">
+            <section id="property-info">
+                <p>Loading property details...</p>
+            </section>
+        </div>
 
-        <section id="inquiry-section">
-            <h3>Contact Landlord / Request Info</h3>
-            <form id="inquiry-form" class="simple-form">
-                <div class="form-group">
-                    <label for="message">Your Message to the Landlord:</label>
-                    <textarea id="message" rows="5" placeholder="I am interested in this property. When is a good time for a viewing?" required></textarea>
-                </div>
-                <button type="submit" id="submit-inquiry-btn">Send Inquiry</button>
-                <p id="inquiry-message-area"></p>
-            </form>
-        </section>
-    </main>
+        <div class="property-sidebar-form">
+            <section id="inquiry-section">
+                <h3><i class="fas fa-calendar-alt"></i> Request a House Tour</h3>
+                
+                <form id="tour-request-form" class="simple-form">
+                    <div class="form-group">
+                        <label for="tour-date">Pick a Date for Your Visit:</label>
+                        <input type="date" id="tour-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Your Message:</label>
+                        <textarea id="message" rows="4" placeholder="I'd like to visit on this date."></textarea>
+                    </div>
+                    
+                    <button type="submit" id="submit-tour-btn">Send Tour Request</button>
+                    <p id="inquiry-message-area"></p>
+                </form>
+            </section>
+        </div>
+        
+    </div> </main>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/supabaseClient.js"></script>
