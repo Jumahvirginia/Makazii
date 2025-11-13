@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tenant Dashboard - Makazi</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/components.css">
 </head>
@@ -12,34 +13,45 @@
     <header class="navbar">
         <h2>Makazi Tenant Dashboard</h2>
         <div class="nav-links">
-            <a href="tenant.html">Browse Rentals</a>
+            <a href="../index.html" class="nav-button"><i class="fas fa-home"></i> Home</a>
+            <a href="tenant.html" class="nav-button">Browse Rentals</a>
             <button id="logout-button">Logout</button>
         </div>
     </header>
 
-    <main class="dashboard-content">
-        <aside class="sidebar">
-            <h3>Search Filters</h3>
-            <form id="search-form">
-                <div class="form-group">
-                    <label for="location">Location:</label>
-                    <input type="text" id="location" placeholder="e.g., Kilimani">
-                </div>
-                <div class="form-group">
-                    <label for="price-max">Max Price:</label>
-                    <input type="number" id="price-max" placeholder="e.g., 50000">
-                </div>
-                <button type="submit">Search</button>
-                <button type="button" id="clear-search">Clear Filters</button>
-            </form>
-        </aside>
+    <section class="search-filter-bar">
+        <form id="search-form">
+            <div class="form-group">
+                <label for="location">Location:</label>
+                <input type="text" id="location" placeholder="e.g., Kilimani">
+            </div>
+            <div class="form-group">
+                <label for="price-max">Max Price:</label>
+                <input type="number" id="price-max" placeholder="e.g., 50000">
+            </div>
+            <button type="submit">Search</button>
+            <button type="button" id="clear-search">Clear Filters</button>
+        </form>
+    </section>
 
+    <main class="dashboard-content-split">
+        
         <section class="main-listings">
             <h2>Available Rental Properties</h2>
             <div id="listings-container" class="property-grid">
                 <p>Loading properties...</p>
             </div>
         </section>
+
+        <aside class="sidebar-requests">
+            <section class="my-requests-panel">
+                <h3 class="panel-title"><i class="fas fa-calendar-alt"></i> My Tour Requests</h3>
+                <div id="my-tour-requests-container">
+                    <p>Loading your tour request statuses...</p>
+                </div>
+            </section>
+        </aside>
+
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
