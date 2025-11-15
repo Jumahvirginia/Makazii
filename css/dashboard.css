@@ -48,13 +48,33 @@
 .add-property, 
 .my-listings, 
 .admin-panel,
-.tour-requests-panel {
+.tour-requests-panel
+.upcoming-tours-panel {
     background-color: var(--bg-color); /* NEW: Cream */
     padding: 2rem;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     margin-bottom: 2rem;
 }
+
+/* This is the 3-column grid for landlord.html */
+.landlord-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1800px;
+    margin: 0 auto;
+    align-items: start;
+}
+
+.landlord-dashboard-grid .add-property,
+.landlord-dashboard-grid .tour-requests-panel,
+.landlord-dashboard-grid .my-listings 
+.landlord-dashboard-grid .upcoming-tours-panel{
+    margin-bottom: 0; /* The 'gap' property handles spacing now */
+}
+
 
 .landlord-listing-card {
     border: 1px solid var(--gray);
@@ -82,7 +102,7 @@
 .tour-requests-panel h3,
 .sidebar h3,
 .my-requests-panel h3 {
-    color: var(--secondary-color); /* teal */
+    color: var(--primary-color); /* NEW: Burgundy */
     border-bottom: 2px solid var(--gray);
     padding-bottom: 0.5rem;
     margin-bottom: 1rem;
@@ -90,11 +110,11 @@
 
 /* --- Status Colors --- */
 .status-verified {
-    color: var(--secondary-color); /*  Teal */
+    color: var(--secondary-color); /* NEW: Teal */
     font-weight: 600;
 }
 .status-pending {
-    color: var(--primary-color); /*  Burgundy */
+    color: var(--primary-color); /* NEW: Burgundy */
     font-weight: 600;
 }
 
@@ -212,23 +232,98 @@
 .status-badge.status-approved {
     background-color: var(--secondary-color); /* NEW: Teal */
 }
-.status-badge.status-denied {
+.status-badge.status-denied,
+.status-badge.status-cancelled { /* Added cancelled status */
     background-color: var(--danger-color); /* Red */
 }
 
-.landlord-dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 2rem;
-    padding: 2rem;
-    max-width: 1800px;
-    margin: 0 auto;
-    align-items: start; /* <--- ADD THIS LINE */
+/* --- NEW: Cancel Request Button --- */
+.cancel-btn {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.3s ease;
+}
+.cancel-btn:hover {
+    background-color: var(--danger-dark);
 }
 
+/* --- landlord dashboard -> Styles for 4-Image Upload Form --- */
+.form-hint {
+    font-size: 0.9rem;
+    color: var(--dark-gray);
+    margin-bottom: 0.5rem;
+}
 
-.landlord-dashboard-grid .add-property,
-.landlord-dashboard-grid .tour-requests-panel,
-.landlord-dashboard-grid .my-listings {
-    margin-bottom: 0; /* The 'gap' property handles spacing now */
+.image-upload-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2x2 grid */
+    gap: 1rem;
+}
+
+.image-upload-slot {
+    background-color: var(--light-gray); /* Warm linen */
+    border: 2px dashed var(--gray);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+}
+
+.image-upload-slot label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.image-upload-slot input[type="file"] {
+    font-size: 0.9rem;
+}
+
+/* --- Style for new Landlord Suggest Button --- */
+.request-actions .suggest-btn {
+    background-color: var(--dark-gray);
+    color: white;
+}
+.request-actions .suggest-btn:hover {
+    background-color: #555; /* A slightly lighter gray */
+}
+/* --- Styles for Admin Analytics Panel --- */
+.admin-analytics {
+    background-color: var(--bg-color); /* Cream */
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.stat-card {
+    background-color: var(--light-gray); /* Warm Linen */
+    border: 1px solid var(--gray);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.stat-card h4 {
+    color: var(--text-color);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card p {
+    color: var(--primary-color); /* Burgundy */
+    font-size: 2.5rem;
+    font-weight: 700;
 }
