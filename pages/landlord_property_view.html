@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Manage Property - Makazi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <header class="navbar">
+        <h2 class="navbar-title-with-logo">
+            <a href="../index.html">
+                <img src="../assets/Makazi logo.png" alt="Makazi Logo" class="navbar-logo">
+            </a>
+            <span>Makazi Landlord</span>
+        </h2>
+        
+        <div id="nav-links-container" class="nav-links">
+            <span id="welcome-message" class="navbar-welcome">Welcome, @username</span>
+            <a href="../dashboards/landlord.html" class="nav-button"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <button id="logout-button">Logout</button>
+        </div>
+        
+        <button id="hamburger-menu" class="hamburger-menu"><i class="fas fa-bars"></i></button>
+    </header>
+
+    <main class="container property-detail-page">
+        <div class="property-detail-layout">
+
+            <div class="property-main-content">
+                <section id="property-info">
+                    <div class="property-gallery">
+                        <div class="main-image-container">
+                            <img src="placeholder.jpg" alt="Main property view" id="main-property-image">
+                        </div>
+                        <div class="thumbnail-grid" id="thumbnail-grid">
+                            </div>
+                    </div>
+                    <div id="property-details-content">
+                        <p>Loading property details...</p>
+                    </div>
+                </section>
+            </div>
+
+            <div class="property-sidebar-form">
+                <section id="manage-section">
+                    <h3><i class="fas fa-edit"></i> Manage Property</h3>
+                    
+                    <form id="manage-status-form" class="simple-form">
+                        <div class="form-group">
+                            <label for="property-status">Set Property Status:</label>
+                            <select id="property-status">
+                                <option value="available">Available (Visible to tenants)</option>
+                                <option value="rented">Rented (Hidden from search)</option>
+                                <option value="unlisted">Unlisted (Hidden from search)</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" id="update-status-btn">Update Status</button>
+                        <p id="manage-message-area"></p>
+                    </form>
+                </section>
+            </div>
+            
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabaseClient.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/landlord_property_view.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>
