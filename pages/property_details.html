@@ -9,11 +9,19 @@
 </head>
 <body>
     <header class="navbar">
-        <h1>Makazi</h1>
-        <div class="nav-links">
-            <a href="../dashboards/tenant.html">Back to Search</a>
+        <h2 class="navbar-title-with-logo">
+            <a href="../index.html">
+                <img src="../assets/Makazi logo.png" alt="Makazi Logo" class="navbar-logo">
+            </a>
+            <span>Makazi</span>
+        </h2>
+        
+        <div id="nav-links-container" class="nav-links">
+            <a href="../dashboards/tenant.html" class="nav-button">Back to Search</a>
             <button id="logout-button" style="display:none;">Logout</button>
         </div>
+        
+        <button id="hamburger-menu" class="hamburger-menu"><i class="fas fa-bars"></i></button>
     </header>
 
     <main class="container property-detail-page">
@@ -21,8 +29,18 @@
     <div class="property-detail-layout">
 
         <div class="property-main-content">
-            <section id="property-info">
-                <p>Loading property details...</p>
+             <section id="property-info">
+                <div class="property-gallery">
+                    <div class="main-image-container">
+                        <img src="placeholder.jpg" alt="Main property view" id="main-property-image">
+                    </div>
+                    <div class="thumbnail-grid" id="thumbnail-grid">
+                        </div>
+                </div>
+
+                <div id="property-details-content">
+                    <p>Loading property details...</p>
+                </div>
             </section>
         </div>
 
@@ -37,10 +55,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="message">Your Message:</label>
-                        <textarea id="message" rows="4" placeholder="I'd like to visit on this date."></textarea>
+                            <div class="label-with-button">
+                                <label for="message">Your Message:</label>
+                                <button type="button" id="use-template-btn" class="template-btn">Use template</button>
+                            </div>
+                            <textarea id="message" rows="4" placeholder="I'd like to visit on this date."></textarea>
                     </div>
-                    
+                                            
                     <button type="submit" id="submit-tour-btn">Send Tour Request</button>
                     <p id="inquiry-message-area"></p>
                 </form>
@@ -53,5 +74,6 @@
     <script src="../js/supabaseClient.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/property.js"></script>
+    <script src="../js/main.js"></script> </body>
 </body>
 </html>
