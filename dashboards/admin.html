@@ -11,28 +11,60 @@
 </head>
 <body>
     <header class="navbar">
-        <h2>Makazi Admin Dashboard</h2>
-        <div class="nav-links">
-            <a href="../index.html" class="nav-button"><i class="fas fa-home"></i> Home</a>
-            <button id="logout-button">Logout</button>
-        </div>
-    </header>
-
-    <main class="dashboard-content">
-        <section class="admin-panel">
-            <h3>Pending Property Approvals</h3>
-            <p>Review new listings submitted by landlords. Approved listings will become visible to all tenants.</p>
-            
-            <div id="pending-listings-container">
-                <p>Loading pending listings...</p>
+    <h2 class="navbar-title-with-logo">
+        <a href="../index.html">
+            <img src="../assets/Makazi logo.png" alt="Makazi Logo" class="navbar-logo">
+        </a>
+        <span>Makazi Admin Dashboard</span>
+    </h2>
+    
+    <div id="nav-links-container" class="nav-links">
+        <span id="welcome-message" class="navbar-welcome">Welcome, @username</span>
+        <a href="../index.html" class="nav-button"><i class="fas fa-home"></i> Home</a>
+        <button id="logout-button">Logout</button>
+    </div>
+    
+    <button id="hamburger-menu" class="hamburger-menu"><i class="fas fa-bars"></i></button>
+</header>
+    <main class="dashboard-content-single-column">
+    
+    <section class="admin-analytics">
+        <h3><i class="fas fa-chart-line"></i> Site Analytics</h3>
+        <div class="analytics-grid">
+            <div class="stat-card">
+                <h4>Total Tenants</h4>
+                <p id="stat-tenants">...</p>
             </div>
-        </section>
+            <div class="stat-card">
+                <h4>Total Landlords</h4>
+                <p id="stat-landlords">...</p>
+            </div>
+            <div class="stat-card">
+                <h4>Active Listings</h4>
+                <p id="stat-active-listings">...</p>
+            </div>
+            <div class="stat-card">
+                <h4>Rented Properties</h4>
+                <p id="stat-rented-properties">...</p>
+            </div>
+        </div>
+    </section>
+    <section class="admin-panel">
+        <h3><i class="fas fa-check-square"></i> Pending Property Approvals</h3>
+        <p>Review new listings submitted by landlords. Approved listings will become visible to all tenants.</p>
         
-        </main>
+        <div id="pending-listings-container">
+            <p>Loading pending listings...</p>
+        </div>
+    </section>
+    
+</main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/supabaseClient.js"></script>
     <script src="../js/auth.js"></script> 
     <script src="../js/admin.js"></script>
+    <script src="../js/main.js"></script> </body>
+
 </body>
 </html>
