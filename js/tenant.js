@@ -4,31 +4,30 @@
 
 // Function to render a single property card (FLIP-CARD LAYOUT)
 function createPropertyCard(property) {
-   
+    // Check if we are on the landing page
     const isLandingPage = window.location.pathname === '/index.html' || window.location.pathname.endsWith('/') || window.location.pathname.includes('127.0.0.1');
-   
+    
+    // Set the correct path for the details page
     const detailsPath = isLandingPage ? `pages/property_details.html?id=${property.id}` : `../pages/property_details.html?id=${property.id}`;
     
-   
+    // Create a details list snippet
     let detailsSnippetHTML = '';
     if (property.details) {
-        
         detailsSnippetHTML = property.details.split('\n')
-            .slice(0, 3) 
+            .slice(0, 3) // Get first 3 items
             .map(item => `<li><i class="fas fa-check-circle"></i> ${item}</li>`)
             .join('');
         detailsSnippetHTML = `<ul class="card-details-list">${detailsSnippetHTML}<li>...</li></ul>`;
     } else {
         detailsSnippetHTML = '<p>No details available.</p>';
     }
-    // --- END NEW ---
 
     return `
         <div class="property-card">
             <div class="flip-card-inner">
                 
                 <div class="flip-card-front">
-                    <img src="${property.image_url || 'placeholder.jpg'}" alt="${property.title}" class="property-image">
+                    <img src="${property.cover_image_url || 'placeholder.jpg'}" alt="${property.title}" class="property-image">
                     <div class="card-body">
                         <h3>${property.title}</h3>
                     </div>
@@ -39,9 +38,7 @@ function createPropertyCard(property) {
                         <h4>${property.title}</h4>
                         <p class="location">${property.location}</p>
                         <p class="price">Ksh ${property.price.toLocaleString()}</p>
-                        
                         ${detailsSnippetHTML}
-                        
                         <a href="${detailsPath}" class="details-button">View Details</a>
                     </div>
                 </div>
@@ -50,6 +47,7 @@ function createPropertyCard(property) {
         </div>
     `;
 }
+
 // Function to inject the fetched properties into the container
 function renderListings(properties, containerId = 'listings-container') {
     const container = document.getElementById(containerId);
@@ -64,32 +62,39 @@ function renderListings(properties, containerId = 'listings-container') {
     container.innerHTML = properties.map(createPropertyCard).join('');
 }
 
+// --- 👇 UPDATED fetchListings function 👇 ---
 // Function to fetch listings from Supabase with filters
-async function fetchListings(locationFilter = null, priceMaxFilter = null) {
+async function fetchListings(locationFilter = null, priceMinFilter = null, priceMaxFilter = null) {
     const container = document.getElementById('listings-container');
     if (container) {
         container.innerHTML = '<p>Loading properties...</p>'; // Show loading state
     }
     
-    // Base query: Select all fields from 'properties' table
     let query = supabase
         .from('properties')
-        .select('*')
-        // ONLY show properties that are verified and not rented
-        .eq('is_verified', true)
-        .eq('is_rented', false);
+        .select(`
+            *,
+            cover_image_url,
+            details
+        `)
+        .eq('status', 'available')
+        .eq('is_verified', true);
 
-    // Apply location filter if provided
+    // Apply location filter
     if (locationFilter) {
         query = query.ilike('location', `%${locationFilter}%`);
     }
 
-    // Apply max price filter if provided
+    // Apply min price filter
+    if (priceMinFilter && !isNaN(priceMinFilter) && priceMinFilter > 0) {
+        query = query.gte('price', priceMinFilter); // gte = "greater than or equal to"
+    }
+
+    // Apply max price filter
     if (priceMaxFilter && !isNaN(priceMaxFilter) && priceMaxFilter > 0) {
-        query = query.lte('price', priceMaxFilter);
+        query = query.lte('price', priceMaxFilter); // lte = "less than or equal to"
     }
     
-    // Execute the query
     const { data: properties, error } = await query;
 
     if (error) {
@@ -102,8 +107,33 @@ async function fetchListings(locationFilter = null, priceMaxFilter = null) {
 
     renderListings(properties, 'listings-container');
 }
+// --- 👆 END OF UPDATE 👆 ---
+
 
 // --- 2. "MY TOUR REQUESTS" FUNCTIONS ---
+
+// Function to handle the "Cancel" button click
+async function handleCancelRequest(event) {
+    const requestId = event.target.closest('button').dataset.id;
+    if (!confirm('Are you sure you want to cancel this tour request?')) {
+        return;
+    }
+
+    const { error } = await supabase
+        .from('tour_requests')
+        .update({ status: 'cancelled' })
+        .eq('id', requestId);
+
+    if (error) {
+        alert(`Error cancelling request: ${error.message}`);
+    } else {
+        alert('Tour request cancelled.');
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            fetchMyTourRequests(user.id);
+        }
+    }
+}
 
 // Fetch and render tenant's request statuses
 async function fetchMyTourRequests(tenantId) {
@@ -112,7 +142,6 @@ async function fetchMyTourRequests(tenantId) {
 
     container.innerHTML = '<p>Loading your tour request statuses...</p>';
 
-    // Fetch all requests for this tenant
     const { data: requests, error } = await supabase
         .from('tour_requests')
         .select(`
@@ -137,6 +166,10 @@ async function fetchMyTourRequests(tenantId) {
     }
 
     container.innerHTML = requests.map(renderMyRequestCard).join('');
+
+    container.querySelectorAll('.cancel-btn').forEach(btn => {
+        btn.addEventListener('click', handleCancelRequest);
+    });
 }
 
 // Helper to create HTML for a single request status card
@@ -145,7 +178,6 @@ function renderMyRequestCard(req) {
     let requestedDate = new Date(req.requested_date + 'T00:00:00').toLocaleDateString();
     
     let responseHTML = '';
-    // If landlord denied and suggested a new date
     if (req.status === 'denied' && req.landlord_suggested_date) {
         let suggestedDate = new Date(req.landlord_suggested_date + 'T00:00:00').toLocaleDateString();
         
@@ -162,6 +194,11 @@ function renderMyRequestCard(req) {
             </div>
         `;
     }
+
+    let cancelButtonHTML = '';
+    if (req.status === 'pending') {
+        cancelButtonHTML = `<button class="cancel-btn" data-id="${req.id}"><i class="fas fa-times"></i> Cancel</button>`;
+    }
     
     return `
         <div class="request-status-card">
@@ -177,6 +214,7 @@ function renderMyRequestCard(req) {
                     <span><strong>Your Request:</strong> ${requestedDate}</span>
                 </div>
                 ${responseHTML}
+                ${cancelButtonHTML} 
             </div>
         </div>
     `;
@@ -190,30 +228,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- Load "My Tour Requests" on Tenant Dashboard ---
     const requestsContainer = document.getElementById('my-tour-requests-container');
     if (requestsContainer) {
-        // Fetch the user ID to load their requests
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
             fetchMyTourRequests(user.id);
         }
     }
 
-    // --- Handle Search on Tenant Dashboard (dashboards/tenant.html) ---
+    // --- 👇 UPDATED Dashboard Search Form 👇 ---
     const dashboardSearchForm = document.getElementById('search-form');
     if (dashboardSearchForm) {
         dashboardSearchForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const location = document.getElementById('location').value.trim();
-            const priceMax = parseFloat(document.getElementById('price-max').value);
+            const priceMin = parseFloat(document.getElementById('price-min').value); // Get Min
+            const priceMax = parseFloat(document.getElementById('price-max').value); // Get Max
             
-            fetchListings(location, priceMax);
+            fetchListings(location, priceMin, priceMax); // Pass both
         });
 
+        // Update "Clear" button to clear both inputs
         document.getElementById('clear-search')?.addEventListener('click', () => {
             document.getElementById('location').value = '';
+            document.getElementById('price-min').value = '';
             document.getElementById('price-max').value = '';
             fetchListings(); // Fetch all listings without filters
         });
     }
+    // --- 👆 END OF UPDATE 👆 ---
 
     // --- Handle Search on Landing Page (index.html) ---
     const landingSearchForm = document.getElementById('landing-search-form');
@@ -222,13 +263,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             e.preventDefault();
             const location = document.getElementById('landing-location').value.trim();
             
-            // Only search by location on the landing page for simplicity
-            fetchListings(location);
+            // Landing page search stays simple
+            fetchListings(location, null, null);
         });
     }
     
     // --- Initial Load ---
-    // Automatically load all verified properties when the page loads
-    // This runs on index.html (featured) AND dashboards/tenant.html
     fetchListings(); 
 });
