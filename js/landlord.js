@@ -1,18 +1,19 @@
-// --- (Keep your existing uploadImage and handleNewPropertySubmit functions) ---
+// js/landlord.js (Complete New Version)
+
+// --- 1. CORE UPLOAD/SUBMIT FUNCTIONS ---
 
 async function uploadImage(file, userId) {
-    // ... (Your existing image upload code) ...
-    // ... (Make sure this function is at the top) ...
+    if (!file) return null; // Skip if no file
+
     const fileName = `${userId}/${Date.now()}-${file.name.replace(/\s/g, '_')}`;
     const { data, error } = await supabase.storage
-        .from('property-images') // Use the bucket name you created
+        .from('property-images')
         .upload(fileName, file);
 
     if (error) {
         throw new Error(`Image upload failed: ${error.message}`);
     }
 
-    // Get the public URL of the uploaded image
     const { data: publicURLData } = supabase.storage
         .from('property-images')
         .getPublicUrl(fileName);
@@ -21,13 +22,12 @@ async function uploadImage(file, userId) {
 }
 
 async function handleNewPropertySubmit(event) {
-    // ... (Your existing 'Add Property' submit code) ...
-    // ... (Make sure this function is next) ...
     event.preventDefault();
     const submitBtn = document.getElementById('submit-listing-btn');
     const messageArea = document.getElementById('message-area');
     submitBtn.disabled = true;
-    messageArea.textContent = 'Processing listing...';
+    messageArea.textContent = 'Uploading images and submitting listing... This may take a moment.';
+    messageArea.style.color = 'var(--secondary-color)'; // Teal
 
     try {
         const { data: { user } } = await supabase.auth.getUser();
@@ -37,9 +37,22 @@ async function handleNewPropertySubmit(event) {
         const location = document.getElementById('location').value;
         const price = parseFloat(document.getElementById('price').value);
         const details = document.getElementById('details').value;
-        const imageFile = document.getElementById('image-file').files[0];
 
-        const imageUrl = await uploadImage(imageFile, user.id);
+        const file1 = document.getElementById('image-file-1').files[0];
+        const file2 = document.getElementById('image-file-2').files[0];
+        const file3 = document.getElementById('image-file-3').files[0];
+        const file4 = document.getElementById('image-file-4').files[0];
+
+        const [url1, url2, url3, url4] = await Promise.all([
+            uploadImage(file1, user.id),
+            uploadImage(file2, user.id),
+            uploadImage(file3, user.id),
+            uploadImage(file4, user.id)
+        ]);
+
+        if (!url1) {
+            throw new Error('Image 1 (Cover Image) is required.');
+        }
 
         const { error: dbError } = await supabase
             .from('properties')
@@ -48,18 +61,23 @@ async function handleNewPropertySubmit(event) {
                 title: title,
                 location: location,
                 price: price,
-                image_url: imageUrl,
                 details: details,
+                status: 'available',
                 is_verified: false,
-                is_rented: false
+                cover_image_url: url1,
+                image_url_2: url2,
+                image_url_3: url3,
+                image_url_4: url4
             });
 
-        if (dbError) throw new Error(`Database insert failed: ${dbError.message}`);
+        if (dbError) {
+            throw new Error(`Database insert failed: ${dbError.message}`);
+        }
 
         messageArea.textContent = 'Listing submitted successfully! It is awaiting Admin approval.';
-        messageArea.style.color = 'var(--primary-color)';
+        messageArea.style.color = 'var(--secondary-color)';
         document.getElementById('add-property-form').reset();
-        fetchMyProperties(user.id); // Reload the simple property list
+        fetchMyProperties(user.id);
 
     } catch (e) {
         console.error("Listing Error:", e);
@@ -71,16 +89,15 @@ async function handleNewPropertySubmit(event) {
 }
 
 
-// --- (ALL NEW CODE BELOW) ---
+// --- 2. TOUR REQUEST & PROPERTY LISTING FUNCTIONS ---
 
 let currentRequestId = null; // Store the request ID for the modal
 
-// 1. FETCH AND RENDER PENDING TOUR REQUESTS
+// Fetch and render *pending* tour requests
 async function fetchTourRequests(landlordId) {
     const container = document.getElementById('tour-requests-container');
     container.innerHTML = '<p>Loading new tour requests...</p>';
 
-    // Fetch requests for this landlord that are 'pending'
     const { data: requests, error } = await supabase
         .from('tour_requests')
         .select(`
@@ -89,8 +106,8 @@ async function fetchTourRequests(landlordId) {
             message,
             status,
             properties ( title, location ),
-            user_profiles!tenant_id ( name ) 
-        `) // This line is now fixed
+            user_profiles!tenant_id ( name )
+        `)
         .eq('landlord_id', landlordId)
         .eq('status', 'pending')
         .order('created_at', { ascending: true });
@@ -106,11 +123,11 @@ async function fetchTourRequests(landlordId) {
     }
 
     container.innerHTML = requests.map(renderRequestCard).join('');
-    addRequestListeners(); // Attach listeners to the new buttons
+    addRequestListeners();
 }
-// Helper to create HTML for a single request card
+
+// Helper to create HTML for a single *pending* request card
 function renderRequestCard(req) {
-    // Format date for readability
     const tourDate = new Date(req.requested_date + 'T00:00:00').toLocaleDateString(undefined, {
         year: 'numeric',
         month: 'long',
@@ -126,13 +143,63 @@ function renderRequestCard(req) {
             
             <div class="request-actions">
                 <button class="approve-btn" data-id="${req.id}"><i class="fas fa-check"></i> Approve</button>
-                <button class="deny-btn" data-id="${req.id}"><i class="fas fa-times"></i> Deny/Suggest</button>
+                <button class="deny-btn" data-id="${req.id}"><i class="fas fa-times"></i> Deny</button>
+                <button class="suggest-btn" data-id="${req.id}"><i class="fas fa-calendar-alt"></i> Suggest</button>
             </div>
         </div>
     `;
 }
 
-// 2. FETCH AND RENDER LANDLORD'S OWN PROPERTIES
+// --- 👇 NEW FUNCTION: Fetch and render *upcoming* tours ---
+async function fetchUpcomingTours(landlordId) {
+    const container = document.getElementById('upcoming-tours-container');
+    container.innerHTML = '<p>Loading upcoming tours...</p>';
+
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+
+    const { data: requests, error } = await supabase
+        .from('tour_requests')
+        .select(`
+            id,
+            requested_date,
+            properties ( title ),
+            user_profiles!tenant_id ( name )
+        `)
+        .eq('landlord_id', landlordId)
+        .eq('status', 'approved')
+        .gte('requested_date', today) // "greater than or equal to" today
+        .order('requested_date', { ascending: true }); // Show the soonest first
+
+    if (error) {
+        container.innerHTML = `<p class="error">Error loading tours: ${error.message}</p>`;
+        return;
+    }
+
+    if (requests.length === 0) {
+        container.innerHTML = '<p>You have no upcoming tours scheduled.</p>';
+        return;
+    }
+
+    // Render as a simple list
+    container.innerHTML = '<ul class="upcoming-tours-list">' + requests.map(tour => {
+        const tourDate = new Date(tour.requested_date + 'T00:00:00').toLocaleDateString(undefined, {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric'
+        });
+        return `
+            <li>
+                <strong>${tourDate}</strong>
+                <p>With ${tour.user_profiles.name} at ${tour.properties.title}</p>
+            </li>
+        `;
+    }).join('') + '</ul>';
+}
+// --- 👆 END OF NEW FUNCTION 👆 ---
+
+
+// Fetch and render landlord's own properties
 async function fetchMyProperties(landlordId) {
     const container = document.getElementById('landlord-listings-container');
     container.innerHTML = '<p>Loading your properties...</p>';
@@ -140,11 +207,12 @@ async function fetchMyProperties(landlordId) {
     const { data: listings, error } = await supabase
         .from('properties')
         .select(`
+            id,
             title,
             location,
             price,
             is_verified,
-            is_rented
+            status
         `)
         .eq('landlord_id', landlordId)
         .order('id', { ascending: false });
@@ -163,26 +231,42 @@ async function fetchMyProperties(landlordId) {
         <div class="landlord-listing-card simple">
             <h4>${p.title} (${p.location})</h4>
             <p><strong>Price:</strong> Ksh ${p.price.toLocaleString()}</p>
-            <p><strong>Status:</strong> ${p.is_rented ? 'Rented' : 'Available'}</p>
+            <p><strong>Status:</strong> <span class="status-${p.status}">${p.status}</span></p>
             <p><strong>Admin Verified:</strong> ${p.is_verified ? '<span class="status-verified">✅ Yes</span>' : '<span class="status-pending">❌ No</span>'}</p>
+            
+            <a href="../pages/landlord_property_view.html?id=${p.id}" class="details-button">
+                <i class="fas fa-edit"></i> Manage Property
+            </a>
         </div>
     `).join('');
 }
 
-// 3. HANDLE MODAL AND APPROVE/DENY ACTIONS
+// --- 3. MODAL AND ACTION HANDLERS ---
+
 function addRequestListeners() {
     document.querySelectorAll('.approve-btn').forEach(btn => {
         btn.addEventListener('click', handleApprove);
     });
     document.querySelectorAll('.deny-btn').forEach(btn => {
-        btn.addEventListener('click', showDenyModal);
+        btn.addEventListener('click', handleDeny);
     });
+    document.querySelectorAll('.suggest-btn').forEach(btn => {
+        btn.addEventListener('click', showSuggestModal);
+    });
+}
+
+// --- 👇 UPDATED: Refresh all lists ---
+async function refreshAllTourLists(userId) {
+    fetchTourRequests(userId);
+    fetchUpcomingTours(userId);
 }
 
 // Handle Approve
 async function handleApprove(event) {
     const requestId = event.target.closest('button').dataset.id;
     if (!confirm('Are you sure you want to approve this tour date?')) return;
+
+    const { data: { user } } = await supabase.auth.getUser();
 
     const { error } = await supabase
         .from('tour_requests')
@@ -193,31 +277,51 @@ async function handleApprove(event) {
         alert(`Error: ${error.message}`);
     } else {
         alert('Tour request approved! The tenant will be notified.');
-        const { data: { user } } = await supabase.auth.getUser();
-        fetchTourRequests(user.id); // Refresh the list
+        refreshAllTourLists(user.id); // Refresh lists
     }
 }
 
-// Show Deny/Suggest Modal
-function showDenyModal(event) {
-    currentRequestId = event.target.closest('button').dataset.id; // Store ID
+// Handle Deny
+async function handleDeny(event) {
+    const requestId = event.target.closest('button').dataset.id;
+    if (!confirm('Are you sure you want to deny this request? This will not suggest a new time.')) return;
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const { error } = await supabase
+        .from('tour_requests')
+        .update({ status: 'denied', landlord_message: 'Request denied by landlord.' })
+        .eq('id', requestId);
+
+    if (error) {
+        alert(`Error: ${error.message}`);
+    } else {
+        alert('Tour request denied.');
+        refreshAllTourLists(user.id); // Refresh lists
+    }
+}
+
+// Show Suggest Modal
+function showSuggestModal(event) {
+    currentRequestId = event.target.closest('button').dataset.id;
     document.getElementById('deny-modal').style.display = 'flex';
 }
 
-// Hide Deny/Suggest Modal
-function hideDenyModal() {
+// Hide Suggest Modal
+function hideSuggestModal() {
     currentRequestId = null;
     document.getElementById('deny-modal').style.display = 'none';
     document.getElementById('deny-request-form').reset();
 }
 
 // Handle the modal form submission
-async function handleDenySubmit(event) {
+async function handleSuggestSubmit(event) {
     event.preventDefault();
     if (!currentRequestId) return;
 
     const suggestedDate = document.getElementById('suggested-date').value;
     const message = document.getElementById('landlord-message').value;
+    const { data: { user } } = await supabase.auth.getUser();
     
     const { error } = await supabase
         .from('tour_requests')
@@ -232,13 +336,12 @@ async function handleDenySubmit(event) {
         alert(`Error: ${error.message}`);
     } else {
         alert('Request denied and new date suggested. The tenant will be notified.');
-        hideDenyModal();
-        const { data: { user } } = await supabase.auth.getUser();
-        fetchTourRequests(user.id); // Refresh the list
+        hideSuggestModal();
+        refreshAllTourLists(user.id); // Refresh lists
     }
 }
 
-// 4. DOM EVENT LISTENER INITIALIZATION
+// --- 4. DOM EVENT LISTENER INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', async () => {
     // Listener for adding a property
     const addForm = document.getElementById('add-property-form');
@@ -247,13 +350,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     // Listeners for the modal
-    document.getElementById('deny-request-form').addEventListener('submit', handleDenySubmit);
-    document.getElementById('cancel-denial-btn').addEventListener('click', hideDenyModal);
+    document.getElementById('deny-request-form').addEventListener('submit', handleSuggestSubmit);
+    document.getElementById('cancel-denial-btn').addEventListener('click', hideSuggestModal);
 
-    // Load initial data for the landlord
+    // Template Message Button for Landlord Modal
+    const landlordTemplateBtn = document.getElementById('landlord-template-btn');
+    if (landlordTemplateBtn) {
+        landlordTemplateBtn.addEventListener('click', () => {
+            const messageBox = document.getElementById('landlord-message');
+            const template = "Unfortunately, I am not available at the requested time. Please see my suggested date. Thank you!";
+            messageBox.value = template;
+        });
+    }
+
+    // --- 👇 UPDATED: Load all initial data for the landlord ---
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
         fetchTourRequests(user.id);
         fetchMyProperties(user.id);
+        fetchUpcomingTours(user.id); // <-- ADDED THIS
     }
 });
