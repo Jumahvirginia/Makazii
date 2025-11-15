@@ -66,6 +66,76 @@ body {
     gap: 1rem;
 }
 
+/* --- Styles for the Navbar Logo --- */
+.navbar-logo {
+    height: 60px; 
+    width: auto;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+/* --- Style for Welcome Message --- */
+.navbar-welcome {
+    color: var(--text-color);
+    font-weight: 600;
+    align-self: center; /* Vertically centers it */
+    margin-right: 1.5rem; /* Adds space between it and the buttons */
+}
+
+/* --- Hamburger Menu & Mobile Nav --- */
+.hamburger-menu {
+    display: none; /* Hidden by default */
+    background: none;
+    border: none;
+    color: var(--primary-color); /* Burgundy */
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* --- Media Query for Mobile --- */
+@media (max-width: 900px) {
+    .hamburger-menu {
+        display: block; /* Show hamburger button */
+    }
+
+    /* Hide the welcome message on small screens */
+    .navbar-welcome {
+        display: none; 
+    }
+
+    /* Target both <nav> and <div> containers */
+    #nav-links-container {
+        display: none; /* Hide the nav links */
+        
+        /* Make them full width and vertical */
+        position: absolute;
+        top: 100%; /* Position right below the navbar */
+        left: 0;
+        width: 100%;
+        background-color: var(--bg-color); /* Cream background */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        
+        /* Vertical layout */
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+    }
+    
+    /* This class is added by JS */
+    #nav-links-container.nav-active {
+        display: flex; /* Show the menu */
+    }
+
+    /* Make links and buttons full width in the mobile menu */
+    #nav-links-container .nav-button,
+    #nav-links-container #logout-button,
+    #nav-links-container a {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+}
+
 /* --- General Button Styling --- */
 button, .nav-button {
     background-color: var(--secondary-dark); /*  Teal */
@@ -251,4 +321,73 @@ textarea {
 }
 .property-details-list li i {
     color: var(--secondary-color); /* NEW: Teal check icon */
+}
+
+/* --- Styles for Template Message Button --- */
+.label-with-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.label-with-button label {
+    margin-bottom: 0; /* Remove default margin */
+}
+
+.template-btn {
+    background: none;
+    border: 1px solid var(--secondary-color); /* Teal */
+    color: var(--secondary-color);
+    padding: 3px 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.template-btn:hover {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+/* --- Styles for Property Image Gallery --- */
+.property-gallery {
+    margin-bottom: 2rem;
+}
+
+.main-image-container img {
+    width: 100%;
+    height: 450px; /* Adjust as needed */
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.thumbnail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.thumbnail-grid img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.thumbnail-grid img:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.thumbnail-grid img.active-thumbnail {
+    opacity: 1;
+    border: 3px solid var(--secondary-color); /* Teal */
 }
