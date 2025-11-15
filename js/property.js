@@ -1,40 +1,93 @@
-// js/property.js
+
+// js/property.js (Complete New Version)
 
 let currentProperty = null; // Store the whole property object
+
+// --- NEW: Function to handle thumbnail clicks ---
+function handleThumbnailClick(event) {
+    // Get the new image source from the clicked thumbnail
+    const newSrc = event.target.src;
+    
+    // Set the main image source
+    document.getElementById('main-property-image').src = newSrc;
+
+    // Update the 'active' class
+    document.querySelectorAll('.thumbnail-grid img').forEach(img => {
+        img.classList.remove('active-thumbnail');
+    });
+    event.target.classList.add('active-thumbnail');
+}
 
 // Function to fetch and display the property details
 async function loadPropertyDetails() {
     const params = new URLSearchParams(window.location.search);
-    const propertyId = params.get('id'); // Get the ID as a simple variable
-    const infoContainer = document.getElementById('property-info');
+    const propertyId = params.get('id');
+    
+    // Target the new content container, not the whole section
+    const detailsContainer = document.getElementById('property-details-content');
 
-    // --- THIS IS THE FIX ---
-    // We check the simple propertyId variable, not 'currentProperty.id'
     if (!propertyId) {
-        infoContainer.innerHTML = '<h2>Error: Property ID not found.</h2>';
+        detailsContainer.innerHTML = '<h2>Error: Property ID not found.</h2>';
         return;
     }
-    // --- END FIX ---
 
-    // Fetch the property using its ID
+    // Fetch the property using its ID, including all new image URLs
     const { data: property, error } = await supabase
         .from('properties')
-        .select('*')
+        .select(`
+            *, 
+            cover_image_url, 
+            image_url_2, 
+            image_url_3, 
+            image_url_4
+        `)
         .eq('id', propertyId)
         .single();
 
     if (error || !property) {
-        infoContainer.innerHTML = `<h2>Error: Property not found.</h2><p>${error?.message || ''}</p>`;
+        detailsContainer.innerHTML = `<h2>Error: Property not found.</h2><p>${error?.message || ''}</p>`;
         return;
     }
     
-    // NOW we store the full property object
+    // Store the full property object
     currentProperty = property; 
     
     // Update the page title
     document.getElementById('page-title').textContent = `${property.title} - Makazi`;
 
-    // --- Create a full details list ---
+    // --- 1. POPULATE THE IMAGE GALLERY ---
+    const mainImage = document.getElementById('main-property-image');
+    const thumbnailGrid = document.getElementById('thumbnail-grid');
+    
+    mainImage.src = property.cover_image_url || 'placeholder.jpg';
+    thumbnailGrid.innerHTML = ''; // Clear any placeholders
+
+    // Create a list of all available images
+    const images = [
+        property.cover_image_url,
+        property.image_url_2,
+        property.image_url_3,
+        property.image_url_4
+    ];
+
+    images.forEach((url, index) => {
+        if (url) { // Only add if the URL exists
+            const img = document.createElement('img');
+            img.src = url;
+            img.alt = `Property view ${index + 1}`;
+            
+            // Add 'active' class to the first thumbnail
+            if (index === 0) {
+                img.classList.add('active-thumbnail');
+            }
+            
+            // Add the click listener
+            img.addEventListener('click', handleThumbnailClick);
+            thumbnailGrid.appendChild(img);
+        }
+    });
+
+    // --- 2. POPULATE THE TEXT DETAILS ---
     let detailsHTML = '';
     if (property.details) {
         detailsHTML = property.details.split('\n')
@@ -44,12 +97,10 @@ async function loadPropertyDetails() {
     } else {
         detailsHTML = '<p>No details provided.</p>';
     }
-    // --- END NEW ---
 
     // Render the property details
-    infoContainer.innerHTML = `
+    detailsContainer.innerHTML = `
         <div class="property-header">
-            <img src="${property.image_url || 'placeholder.jpg'}" alt="${property.title}" class="detail-image">
             <div class="header-text">
                 <h1>${property.title}</h1>
                 <p class="location-price">${property.location} | <span class="price">Ksh ${property.price.toLocaleString()} / month</span></p>
@@ -57,13 +108,11 @@ async function loadPropertyDetails() {
         </div>
         <div class="property-body">
             <h3>Details & Amenities</h3>
-            
             ${detailsHTML}
-
-            <p><strong>Status:</strong> ${property.is_rented ? 'Rented' : 'Available'}</p>
+            <p><strong>Status:</strong> <span class="status-${property.status}">${property.status}</span></p>
             <p class="verification-status">
                 <strong>Verified:</strong> ${property.is_verified ? '<span class="status-verified">✅ Yes</span>' : '<span class="status-pending">❌ No (Pending Approval)</span>'}
-            </p>
+            </prop>
         </div>
     `;
 }
@@ -86,18 +135,15 @@ async function handleTourRequestSubmit(event) {
     messageArea.textContent = 'Sending request...';
 
     try {
-        // 1. Get the current tenant's user ID
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
             throw new Error('You must be logged in to send a request.');
         }
         
-        // This check will now work because currentProperty is the full object
         if (!currentProperty || !currentProperty.landlord_id) {
             throw new Error('Property information is missing. Please refresh.');
         }
 
-        // 2. Insert into the 'tour_requests' table
         const { error } = await supabase
             .from('tour_requests')
             .insert({
@@ -106,7 +152,7 @@ async function handleTourRequestSubmit(event) {
                 landlord_id: currentProperty.landlord_id,
                 requested_date: requestedDate,
                 message: message,
-                status: 'pending' // Default status
+                status: 'pending'
             });
 
         if (error) {
@@ -137,7 +183,17 @@ document.addEventListener('DOMContentLoaded', () => {
         tourForm.addEventListener('submit', handleTourRequestSubmit);
     }
     
-    // Show logout button if logged in (handled by auth.js)
+    // --- Template Message Button ---
+    const templateBtn = document.getElementById('use-template-btn');
+    if (templateBtn) {
+        templateBtn.addEventListener('click', () => {
+            const messageBox = document.getElementById('message');
+            const template = "Hello, I am interested in this property. The date I selected for a tour works best for me, but please let me know if another time is better. Thanks!";
+            messageBox.value = template;
+        });
+    }
+    
+    // Show logout button if logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
         if (session) {
             document.getElementById('logout-button').style.display = 'inline-block';
