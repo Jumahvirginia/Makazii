@@ -10,11 +10,17 @@
 </head>
 <body>
     <header class="navbar">
-        <h1>Makazi</h1>
-        <nav>
+        <h2 class="navbar-title-with-logo">
+            <a href="index.html">
+                <img src="assets/Makazi logo.png" alt="Makazi Logo" class="navbar-logo">
+            </a>
+            <span>Makazi</span>
+        </h2>
+        <nav id="nav-links-container" class="nav-links">
             <a href="login.html" class="nav-button">Login</a>
             <a href="register.html" class="nav-button primary">Register</a>
         </nav>
+        <button id="hamburger-menu" class="hamburger-menu"><i class="fas fa-bars"></i></button>
     </header>
 
     <main class="landing-hero">
@@ -43,5 +49,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabaseClient.js"></script>
     <script src="js/tenant.js"></script> 
+    <script src="js/main.js"></script> 
+
 </body>
 </html>
