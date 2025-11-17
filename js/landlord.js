@@ -1,4 +1,4 @@
-// js/landlord.js (Complete New Version)
+// js/landlord.js (Complete Final Version - 3 Buttons)
 
 // --- 1. CORE UPLOAD/SUBMIT FUNCTIONS ---
 
@@ -14,7 +14,7 @@ async function uploadImage(file, userId) {
         throw new Error(`Image upload failed: ${error.message}`);
     }
 
-    const { data: publicURLData } = supabase.storage
+    const { data: publicURLData } = await supabase.storage
         .from('property-images')
         .getPublicUrl(fileName);
         
@@ -134,6 +134,7 @@ function renderRequestCard(req) {
         day: 'numeric'
     });
 
+    // THIS IS THE 3-BUTTON LAYOUT
     return `
         <div class="landlord-listing-card">
             <h4>Tour Request for: ${req.properties.title}</h4>
@@ -150,12 +151,11 @@ function renderRequestCard(req) {
     `;
 }
 
-// --- 👇 NEW FUNCTION: Fetch and render *upcoming* tours ---
+// Fetch and render *upcoming* tours
 async function fetchUpcomingTours(landlordId) {
     const container = document.getElementById('upcoming-tours-container');
     container.innerHTML = '<p>Loading upcoming tours...</p>';
 
-    // Get today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split('T')[0];
 
     const { data: requests, error } = await supabase
@@ -168,8 +168,8 @@ async function fetchUpcomingTours(landlordId) {
         `)
         .eq('landlord_id', landlordId)
         .eq('status', 'approved')
-        .gte('requested_date', today) // "greater than or equal to" today
-        .order('requested_date', { ascending: true }); // Show the soonest first
+        .gte('requested_date', today)
+        .order('requested_date', { ascending: true });
 
     if (error) {
         container.innerHTML = `<p class="error">Error loading tours: ${error.message}</p>`;
@@ -181,7 +181,6 @@ async function fetchUpcomingTours(landlordId) {
         return;
     }
 
-    // Render as a simple list
     container.innerHTML = '<ul class="upcoming-tours-list">' + requests.map(tour => {
         const tourDate = new Date(tour.requested_date + 'T00:00:00').toLocaleDateString(undefined, {
             weekday: 'long',
@@ -196,7 +195,6 @@ async function fetchUpcomingTours(landlordId) {
         `;
     }).join('') + '</ul>';
 }
-// --- 👆 END OF NEW FUNCTION 👆 ---
 
 
 // Fetch and render landlord's own properties
@@ -255,7 +253,6 @@ function addRequestListeners() {
     });
 }
 
-// --- 👇 UPDATED: Refresh all lists ---
 async function refreshAllTourLists(userId) {
     fetchTourRequests(userId);
     fetchUpcomingTours(userId);
@@ -363,11 +360,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // --- 👇 UPDATED: Load all initial data for the landlord ---
+    // Custom File Input Listeners
+    document.querySelectorAll('.image-input-hidden').forEach(input => {
+        input.addEventListener('change', (e) => {
+            const fileName = e.target.files.length > 0 ? e.target.files[0].name : 'No file chosen';
+            const displaySpan = e.target.closest('.image-upload-slot').querySelector('.file-name-display');
+            if (displaySpan) {
+                displaySpan.textContent = fileName;
+            }
+        });
+    });
+
+    // Load all initial data for the landlord
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
         fetchTourRequests(user.id);
         fetchMyProperties(user.id);
-        fetchUpcomingTours(user.id); // <-- ADDED THIS
+        fetchUpcomingTours(user.id);
     }
 });
