@@ -62,7 +62,6 @@ function renderListings(properties, containerId = 'listings-container') {
     container.innerHTML = properties.map(createPropertyCard).join('');
 }
 
-// --- 👇 UPDATED fetchListings function 👇 ---
 // Function to fetch listings from Supabase with filters
 async function fetchListings(locationFilter = null, priceMinFilter = null, priceMaxFilter = null) {
     const container = document.getElementById('listings-container');
@@ -107,7 +106,6 @@ async function fetchListings(locationFilter = null, priceMinFilter = null, price
 
     renderListings(properties, 'listings-container');
 }
-// --- 👆 END OF UPDATE 👆 ---
 
 
 // --- 2. "MY TOUR REQUESTS" FUNCTIONS ---
@@ -119,6 +117,7 @@ async function handleCancelRequest(event) {
         return;
     }
 
+    // Update the status to 'cancelled'
     const { error } = await supabase
         .from('tour_requests')
         .update({ status: 'cancelled' })
@@ -128,6 +127,7 @@ async function handleCancelRequest(event) {
         alert(`Error cancelling request: ${error.message}`);
     } else {
         alert('Tour request cancelled.');
+        // Refresh the list to show the change
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
             fetchMyTourRequests(user.id);
@@ -167,6 +167,7 @@ async function fetchMyTourRequests(tenantId) {
 
     container.innerHTML = requests.map(renderMyRequestCard).join('');
 
+    // Attach listeners to any new "Cancel" buttons
     container.querySelectorAll('.cancel-btn').forEach(btn => {
         btn.addEventListener('click', handleCancelRequest);
     });
@@ -174,10 +175,24 @@ async function fetchMyTourRequests(tenantId) {
 
 // Helper to create HTML for a single request status card
 function renderMyRequestCard(req) {
-    let statusText = req.status.charAt(0).toUpperCase() + req.status.slice(1);
+    // --- 👇 THIS IS THE LOGIC CHANGE 👇 ---
+    let statusText = '';
+    let statusClass = '';
+
+    if (req.status === 'denied' && req.landlord_suggested_date) {
+        statusText = 'New Date Suggested';
+        statusClass = 'suggested'; // new class
+    } else {
+        // Fallback for 'pending', 'approved', 'cancelled', or 'denied' (with no date)
+        statusText = req.status.charAt(0).toUpperCase() + req.status.slice(1);
+        statusClass = req.status;
+    }
+    // --- 👆 END OF LOGIC CHANGE 👆 ---
+
     let requestedDate = new Date(req.requested_date + 'T00:00:00').toLocaleDateString();
     
     let responseHTML = '';
+    // This logic is still correct
     if (req.status === 'denied' && req.landlord_suggested_date) {
         let suggestedDate = new Date(req.landlord_suggested_date + 'T00:00:00').toLocaleDateString();
         
@@ -195,8 +210,9 @@ function renderMyRequestCard(req) {
         `;
     }
 
+    // This logic is still correct
     let cancelButtonHTML = '';
-    if (req.status === 'pending') {
+    if (req.status === 'pending' || req.status === 'approved') {
         cancelButtonHTML = `<button class="cancel-btn" data-id="${req.id}"><i class="fas fa-times"></i> Cancel</button>`;
     }
     
@@ -204,7 +220,7 @@ function renderMyRequestCard(req) {
         <div class="request-status-card">
             <div class="request-card-header">
                 <span class="property-name"><i class="fas fa-building"></i> ${req.properties.title}</span>
-                <span class="status-badge status-${req.status}">
+                <span class="status-badge status-${statusClass}">
                     ${statusText}
                 </span>
             </div>
@@ -234,7 +250,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // --- 👇 UPDATED Dashboard Search Form 👇 ---
+    // --- Handle Search on Tenant Dashboard (dashboards/tenant.html) ---
     const dashboardSearchForm = document.getElementById('search-form');
     if (dashboardSearchForm) {
         dashboardSearchForm.addEventListener('submit', (e) => {
@@ -254,7 +270,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             fetchListings(); // Fetch all listings without filters
         });
     }
-    // --- 👆 END OF UPDATE 👆 ---
 
     // --- Handle Search on Landing Page (index.html) ---
     const landingSearchForm = document.getElementById('landing-search-form');
