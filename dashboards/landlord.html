@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landlord Dashboard - Makazi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/style.css?v=3">
+    <link rel="stylesheet" href="../css/dashboard.css?v=3">
 </head>
 <body>
     <header class="navbar">
@@ -26,29 +26,14 @@
         <button id="hamburger-menu" class="hamburger-menu"><i class="fas fa-bars"></i></button>
     </header>
 
-    <h2 class="navbar-title-with-logo">
-        <a href="../index.html">
-            <img src="../assets/Makazi logo.png" alt="Makazi Logo" class="navbar-logo">
-        </a>
-        <span>Makazi</span>
-    </h2>
-    
-    <div id="nav-links-container" class="nav-links">
-        <a href="../dashboards/tenant.html" class="nav-button">Back to Search</a>
-        <button id="logout-button" style="display:none;">Logout</button>
-    </div>
-    
-    <button id="hamburger-menu" class="hamburger-menu"><i class="fas fa-bars"></i></button>
-    </header>
-
     <main class="landlord-dashboard-grid">
 
-    <section class="my-listings">
-        <h3 class="panel-title"><i class="fas fa-home"></i> My Properties</h3>
-          <div id="landlord-listings-container">
-            <p>Loading your properties...</p>
-          </div>
-      </section>
+        <section class="my-listings">
+            <h3 class="panel-title"><i class="fas fa-home"></i> My Properties</h3>
+            <div id="landlord-listings-container">
+                <p>Loading your properties...</p>
+            </div>
+        </section>
 
         <section class="add-property">
             <h3><i class="fas fa-plus-circle"></i> List a New Rental Property</h3>
@@ -57,113 +42,114 @@
                     <label for="title">Property Title / Short Description:</label>
                     <input type="text" id="title" required>
                 </div>
-
                 <div class="form-group">
                     <label for="location">Location (City - Area):</label>
                     <input type="text" id="location" placeholder="e.g., Nairobi - Kilimani" required>
                 </div>
-
                 <div class="form-group">
                     <label for="price">Monthly Rent (Ksh):</label>
                     <input type="number" id="price" min="1" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="details">Property Details / Amenities:</label>
                     <textarea id="details" rows="4" required></textarea>
                 </div>
                 
                 <div class="form-group">
-                    <label for="image-file">Property Image (Upload):</label>
-                    <input type="file" id="image-file" accept="image/*" required>
-                </div>
-                
-                <div class="form-group">
-                        <label>Property Images (Upload up to 4):</label>
-                        <p class="form-hint">The **Cover Image** is the one shown on the flip card.</p>
+                    <label>Property Images (Upload up to 4):</label>
+                    <p class="form-hint">The **Cover Image** is the one shown on the flip card.</p>
+                    <div class="image-upload-grid">
                         
-                     <div class="image-upload-grid">
-                            <div class="image-upload-slot">
-                                <label for="image-file-1">Image 1 (Cover)</label>
-                                <input type="file" id="image-file-1" class="image-input" accept="image/*" required>
-                            </div>
-                            
-                            <div class="image-upload-slot">
-                                <label for="image-file-2">Image 2</label>
-                                <input type="file" id="image-file-2" class="image-input" accept="image/*">
-                            </div>
-
-                            <div class="image-upload-slot">
-                                <label for="image-file-3">Image 3</label>
-                                <input type="file" id="image-file-3" class="image-input" accept="image/*">
-                            </div>
-
-                            <div class="image-upload-slot">
-                                <label for="image-file-4">Image 4</label>
-                                <input type="file" id="image-file-4" class="image-input" accept="image/*">
-                            </div>
+                        <div class="image-upload-slot">
+                            <label>Image 1 (Cover)</label>
+                            <label for="image-file-1" class="file-input-label">
+                                <i class="fas fa-upload"></i> Choose File
+                            </label>
+                            <input type="file" id="image-file-1" class="image-input-hidden" accept="image/*" required>
+                            <span class="file-name-display">No file chosen</span>
                         </div>
+                        
+                        <div class="image-upload-slot">
+                            <label>Image 2</label>
+                            <label for="image-file-2" class="file-input-label">
+                                <i class="fas fa-upload"></i> Choose File
+                            </label>
+                            <input type="file" id="image-file-2" class="image-input-hidden" accept="image/*">
+                            <span class="file-name-display">No file chosen</span>
+                        </div>
+
+                        <div class="image-upload-slot">
+                            <label>Image 3</label>
+                            <label for="image-file-3" class="file-input-label">
+                                <i class="fas fa-upload"></i> Choose File
+                            </label>
+                            <input type="file" id="image-file-3" class="image-input-hidden" accept="image/*">
+                            <span class="file-name-display">No file chosen</span>
+                        </div>
+
+                        <div class="image-upload-slot">
+                            <label>Image 4</label>
+                            <label for="image-file-4" class="file-input-label">
+                                <i class="fas fa-upload"></i> Choose File
+                            </label>
+                            <input type="file" id="image-file-4" class="image-input-hidden" accept="image/*">
+                            <span class="file-name-display">No file chosen</span>
+                        </div>
+
                     </div>
-                
+                </div>
+
                 <button type="submit" id="submit-listing-btn">Submit Listing (Requires Admin Approval)</button>
                 <p id="message-area" class="message-text"></p>
             </form>
         </section>
-
-        <section class="tour-requests-panel">
-            <h3 class="panel-title"><i class="fas fa-calendar-check"></i> Pending Tour Requests</h3>
-                 <p>Review new requests from tenants. You can approve or deny and suggest a new time.</p>
+        
+        <div class="landlord-column-stack">
+            <section class="tour-requests-panel">
+                <h3 class="panel-title"><i class="fas fa-calendar-check"></i> Pending Tour Requests</h3>
+                <p>Review new requests from tenants.</p>
+                <div id="tour-requests-container">
+                    <p>Loading new tour requests...</p>
+                </div>
+            </section>
     
-            <div id="tour-requests-container">
-                 <p>Loading new tour requests...</p>
-            </div>
-        </section>
-
-        <section class="tour-requests-panel">
+            <section class="upcoming-tours-panel">
+                <h3 class="panel-title"><i class="fas fa-calendar-check"></i> Upcoming Tours</h3>
+                <p>A list of your approved, upcoming tours.</p>
+                <div id="upcoming-tours-container">
+                    <p>Loading upcoming tours...</p>
+                </div>
             </section>
+        </div>
 
-        <section class="upcoming-tours-panel">
-            <h3 class="panel-title"><i class="fas fa-calendar-check"></i> Upcoming Tours</h3>
-            <p>A list of your approved, upcoming tours.</p>
-            <div id="upcoming-tours-container">
-                <p>Loading upcoming tours...</p>
-            </div>
-        </section>
-        
-        <section class="my-listings">
-            </section>
-
-    <div id="deny-modal" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
-        <h4>Suggest a New Date</h4>
-        <p>The tenant's requested date doesn't work. Deny it and suggest an alternative.</p>
-        
-        <form id="deny-request-form">
-            <div class="form-group">
-                <label for="suggested-date">Your Suggested Date:</label>
-                <input type="date" id="suggested-date" required>
-            </div>
-            <div class="form-group">
-            <div class="label-with-button">
-                <label for="landlord-message">Message (optional):</label>
-                <button type="button" id="landlord-template-btn" class="template-btn">Use template</button>
-            </div>
-            <textarea id="landlord-message" rows="3" placeholder="This date works better for me."></textarea>
-            </div>
-            <div class="modal-actions">
-                <button type="submit" id="submit-denial-btn">Suggest New Date</button>
-                <button type="button" id="cancel-denial-btn">Cancel</button>
-            </div>
-        </form>
+    </main> <div id="deny-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h4>Suggest a New Date</h4>
+            <p>The tenant's requested date doesn't work. Deny it and suggest an alternative.</p>
+            <form id="deny-request-form">
+                <div class="form-group">
+                    <label for="suggested-date">Your Suggested Date:</label>
+                    <input type="date" id="suggested-date" required>
+                </div>
+                <div class="form-group">
+                    <div class="label-with-button">
+                        <label for="landlord-message">Message (optional):</label>
+                        <button type="button" id="landlord-template-btn" class="template-btn">Use template</button>
+                    </div>
+                    <textarea id="landlord-message" rows="3" placeholder="This date works better for me."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" id="submit-denial-btn">Suggest New Date</button>
+                    <button type="button" id="cancel-denial-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
-    </main>
-
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/supabaseClient.js"></script>
     <script src="../js/auth.js"></script> 
-    <script src="../js/landlord.js"></script>
+    <script src="../js/landlord.js?v=3"></script>
     <script src="../js/main.js"></script>
-
 </body>
 </html>
