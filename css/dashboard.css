@@ -1,122 +1,164 @@
-/* css/dashboard.css */
+/* css/dashboard.css (Complete Final Version) */
 
 /* --- Tenant Dashboard Layout --- */
 .search-filter-bar {
-    /* Sits on the light-gray body background */
     padding: 1rem 2rem;
     margin: 1rem auto;
     max-width: 1400px;
 }
-
 .search-filter-bar form {
     display: flex;
-    flex-wrap: wrap; /* Allow wrapping on small screens */
+    flex-wrap: wrap; 
     align-items: flex-end;
     gap: 1.5rem;
 }
-
 .search-filter-bar .form-group {
     margin-bottom: 0;
-    /* Removed flex-grow to stop stretching */
 }
-
-/* 2. The 2-column split content area */
 .dashboard-content-split {
     display: flex;
-    flex-wrap: wrap; /* Allow stacking on small screens */
+    flex-wrap: wrap; 
     gap: 2rem;
     padding: 0 2rem 2rem 2rem;
     max-width: 1400px;
     margin: 0 auto;
 }
-
-/* 3. The main listings (3/4) */
 .dashboard-content-split .main-listings {
-    flex: 3; /* Takes 3 parts */
+    flex: 3; 
     min-width: 70%;
 }
-
-/* 4. The requests sidebar (1/4) */
 .dashboard-content-split .sidebar-requests {
-    flex: 1; /* Takes 1 part */
-    min-width: 280px; /* Prevents it from getting too small */
-    align-self: flex-start; /* Stays at the top */
+    flex: 1; 
+    min-width: 280px;
+    align-self: flex-start;
 }
 
-/* --- Landlord/Admin Dashboard (Single Column) --- */
-/* These styles apply to landlord.html and admin.html */
-.add-property, 
-.my-listings, 
-.admin-panel,
-.tour-requests-panel
-.upcoming-tours-panel {
-    background-color: var(--bg-color); /* NEW: Cream */
+/* --- Admin Page Base --- */
+.dashboard-content-single-column {
     padding: 2rem;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    margin-bottom: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
-/* This is the 3-column grid for landlord.html */
+/* --- Landlord Dashboard 3-Column Grid --- */
 .landlord-dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); /* 3-column */
     gap: 2rem;
     padding: 2rem;
     max-width: 1800px;
     margin: 0 auto;
-    align-items: start;
+    align-items: start; /* Aligns columns to the top */
 }
 
-.landlord-dashboard-grid .add-property,
-.landlord-dashboard-grid .tour-requests-panel,
-.landlord-dashboard-grid .my-listings 
-.landlord-dashboard-grid .upcoming-tours-panel{
-    margin-bottom: 0; /* The 'gap' property handles spacing now */
+/* Stacked column for tours */
+.landlord-column-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem; 
 }
 
 
+/* --- General Panel Styles (for Landlord/Admin) --- */
+.add-property, 
+.my-listings, 
+.admin-panel,
+.tour-requests-panel,
+.upcoming-tours-panel,
+.admin-analytics {
+    background-color: var(--bg-color); 
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    /* No margin-bottom, gap handles it */
+}
+
+/* --- Landlord Card Styles --- */
 .landlord-listing-card {
     border: 1px solid var(--gray);
     padding: 1rem;
     margin-bottom: 1rem;
     border-radius: var(--border-radius);
 }
+.landlord-listing-card .details-button {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 0.5rem;
+}
 
 .request-actions {
     margin-top: 1rem;
     display: flex;
+    flex-wrap: wrap; /* Allow buttons to wrap */
     gap: 0.5rem;
 }
 .request-actions .approve-btn {
-    background-color: var(--secondary-color); /* NEW: Teal */
+    background-color: var(--secondary-color); /* Teal */
 }
 .request-actions .deny-btn {
     background-color: var(--danger-color);
 }
+/* Style for the "Suggest" button */
+.request-actions .suggest-btn {
+    background-color: var(--dark-gray);
+    color: white;
+}
+.request-actions .suggest-btn:hover {
+    background-color: #555;
+}
+
 
 /* --- Style Dashboard Section Headers --- */
 .add-property h3,
 .my-listings h3,
 .admin-panel h3,
 .tour-requests-panel h3,
+.upcoming-tours-panel h3,
 .sidebar h3,
-.my-requests-panel h3 {
-    color: var(--primary-color); /* NEW: Burgundy */
+.my-requests-panel h3,
+.admin-analytics h3 {
+    color: var(--primary-color); /* Burgundy */
     border-bottom: 2px solid var(--gray);
     padding-bottom: 0.5rem;
     margin-bottom: 1rem;
 }
 
+/* --- Upcoming Tours List Style --- */
+.upcoming-tours-list {
+    list-style: none;
+    padding: 0;
+}
+.upcoming-tours-list li {
+    border-bottom: 1px solid var(--gray);
+    padding: 0.5rem 0;
+}
+.upcoming-tours-list li:last-child {
+    border: none;
+}
+
+
 /* --- Status Colors --- */
 .status-verified {
-    color: var(--secondary-color); /* NEW: Teal */
+    color: var(--secondary-color); /* Teal */
     font-weight: 600;
 }
 .status-pending {
-    color: var(--primary-color); /* NEW: Burgundy */
+    color: var(--primary-color); /* Burgundy */
     font-weight: 600;
 }
+.status-available, .status-rented, .status-unlisted {
+    text-transform: capitalize;
+    font-weight: 600;
+}
+.status-available { color: var(--secondary-color); }
+.status-rented, .status-unlisted { color: var(--danger-color); }
+
 
 /* --- Modal Styles for Deny/Suggest --- */
 .modal-overlay {
@@ -131,23 +173,20 @@
     align-items: center;
     z-index: 1000;
 }
-
 .modal-content {
-    background: var(--bg-color); /* NEW: Cream */
+    background: var(--bg-color); /* Cream */
     padding: 2rem;
     border-radius: var(--border-radius);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     width: 90%;
     max-width: 500px;
 }
-
 .modal-actions {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
     margin-top: 1rem;
 }
-
 .modal-actions #cancel-denial-btn {
     background-color: var(--gray);
     color: var(--text-color);
@@ -159,7 +198,7 @@
 
 /* --- Tenant "My Requests" Card Styles --- */
 .my-requests-panel {
-    background-color: var(--bg-color); /* NEW: Cream */
+    background-color: var(--bg-color); /* Cream */
     padding: 2rem;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
@@ -169,10 +208,9 @@
     border: 1px solid var(--gray);
     border-radius: var(--border-radius);
     margin-bottom: 1.5rem;
-    background-color: var(--bg-color); /* NEW: Cream */
+    background-color: var(--bg-body); 
     box-shadow: 0 2px 4px rgba(0,0,0,0.03);
 }
-
 .request-card-header {
     display: flex;
     justify-content: space-between;
@@ -182,15 +220,13 @@
     padding: 1rem;
     border-bottom: 1px solid var(--light-gray);
 }
-
 .request-card-header .property-name {
     font-weight: 600;
     font-size: 1.1rem;
 }
 .request-card-header .property-name i {
-    color: var(--primary-color); /* NEW: Burgundy icon */
+    color: var(--primary-color); /* Burgundy icon */
 }
-
 .request-status-card .status-badge {
     padding: 5px 12px;
     border-radius: 20px;
@@ -199,11 +235,9 @@
     text-transform: uppercase;
     font-size: 0.8rem;
 }
-
 .request-card-body {
     padding: 1rem;
 }
-
 .request-detail-item {
     display: flex;
     align-items: flex-start;
@@ -211,15 +245,13 @@
     font-size: 0.95rem;
     margin-bottom: 0.5rem;
 }
-
 .request-detail-item i {
     color: var(--dark-gray);
     margin-top: 4px;
 }
-
 .landlord-suggestion {
     background-color: var(--light-gray);
-    border-left: 4px solid var(--primary-color); /* NEW: Burgundy */
+    border-left: 4px solid var(--primary-color); /* Burgundy */
     padding: 0.75rem 1rem;
     margin-top: 1rem;
     border-radius: 4px;
@@ -227,17 +259,21 @@
 
 /* Badge Status Colors */
 .status-badge.status-pending {
-    background-color: var(--primary-color); /* NEW: Burgundy */
+    background-color: var(--primary-color); /* Burgundy */
 }
 .status-badge.status-approved {
-    background-color: var(--secondary-color); /* NEW: Teal */
+    background-color: var(--secondary-color); /* Teal */
 }
 .status-badge.status-denied,
-.status-badge.status-cancelled { /* Added cancelled status */
+.status-badge.status-cancelled {
     background-color: var(--danger-color); /* Red */
 }
+.status-badge.status-suggested {
+    background-color: var(--gray); /* Neutral gray */
+    color: var(--text-color);
+}
 
-/* --- NEW: Cancel Request Button --- */
+/* --- Cancel Request Button --- */
 .cancel-btn {
     background-color: var(--danger-color);
     color: white;
@@ -253,47 +289,9 @@
     background-color: var(--danger-dark);
 }
 
-/* --- landlord dashboard -> Styles for 4-Image Upload Form --- */
-.form-hint {
-    font-size: 0.9rem;
-    color: var(--dark-gray);
-    margin-bottom: 0.5rem;
-}
-
-.image-upload-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* 2x2 grid */
-    gap: 1rem;
-}
-
-.image-upload-slot {
-    background-color: var(--light-gray); /* Warm linen */
-    border: 2px dashed var(--gray);
-    border-radius: var(--border-radius);
-    padding: 1rem;
-}
-
-.image-upload-slot label {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    display: block;
-}
-
-.image-upload-slot input[type="file"] {
-    font-size: 0.9rem;
-}
-
-/* --- Style for new Landlord Suggest Button --- */
-.request-actions .suggest-btn {
-    background-color: var(--dark-gray);
-    color: white;
-}
-.request-actions .suggest-btn:hover {
-    background-color: #555; /* A slightly lighter gray */
-}
-/* --- Styles for Admin Analytics Panel --- */
+/* --- Admin Analytics Panel --- */
 .admin-analytics {
-    background-color: var(--bg-color); /* Cream */
+    background-color: var(--bg-color);
     padding: 2rem;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
@@ -308,22 +306,107 @@
 }
 
 .stat-card {
-    background-color: var(--light-gray); /* Warm Linen */
+    background-color: var(--light-gray);
     border: 1px solid var(--gray);
     border-radius: var(--border-radius);
     padding: 1.5rem;
     text-align: center;
 }
-
 .stat-card h4 {
     color: var(--text-color);
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
 }
-
 .stat-card p {
     color: var(--primary-color); /* Burgundy */
     font-size: 2.5rem;
     font-weight: 700;
+}
+
+/* --- Image Upload Form --- */
+.form-hint {
+    font-size: 0.9rem;
+    color: var(--dark-gray);
+    margin-bottom: 0.5rem;
+}
+.image-upload-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2x2 grid */
+    gap: 1rem;
+}
+.image-upload-slot {
+    background-color: var(--light-gray); 
+    border: 2px dashed var(--gray);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+}
+.image-upload-slot label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Hide the real file input */
+.image-input-hidden {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+/* Style the new label as a button */
+.file-input-label {
+    background-color: var(--secondary-color); /* Teal */
+    color: white;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+.file-input-label:hover {
+    background-color: var(--secondary-dark);
+}
+.file-input-label i {
+    margin-right: 4px;
+}
+
+/* Style the file name display text */
+.file-name-display {
+    display: block; /* This is the key */
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--dark-gray);
+    font-style: italic;
+    word-break: break-all;
+}
+
+/* --- NEW Admin Dashboard 2-Column Layout --- */
+.admin-dashboard-split {
+    display: grid;
+    /* Col 1 (Analytics) is 1 part, Col 2 (Pending) is 2 parts */
+    grid-template-columns: 1fr 1fr; 
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1800px;
+    margin: 0 auto;
+    align-items: start; /* Aligns columns to the top */
+}
+
+/* Stacks the columns on smaller screens */
+@media (max-width: 900px) {
+    .admin-dashboard-split {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Remove the bottom margin from panels when they are in this grid */
+.admin-dashboard-split .admin-analytics,
+.admin-dashboard-split .admin-panel {
+    margin-bottom: 0;
 }
